@@ -1,0 +1,55 @@
+Apis
+------------------------
+as laravel api i need functions :
+-----
+Register : 
+- Register Customer FIELDS :firstname(required - min 7 max 25 ) - lastmname(required - min 7 max 25 ) - phone(required 09********) -
+email(optional - email)
+- validation code by phone(resend) - Password - Fingerprint - (allow notification)
+gender(male - female)- profile_picture(optional - Image) - State(REQUIRED) OR Register by facebook.
+--------------------------------------
+aNAD Login :
+- Number with validation code send to phone
+- Or Lpgin with Facebook 
+---------------------------------------------
+index :
+- Current location - 
+Categories :  name desc
+(same states)(Name - Location - rating(number) - open.close - deposite??)
+- Show : ??3???????????????
+images(large one - small list ) - Name - State - City - Description -  RATING(NUM)-  Reviews (stars mumb - num reviews)
+ - viewMap 
+ - bOOK NOW (
+    PERSON NUM - DATE - sELECT TIME AVAILABLE 
+ )
+ - fOLLOWING : LIST myRESTURANTS - Name - State - City   List Recommend 
+ - setFollow : id res 
+ - Bookings :  Upcoming - History  (num person - date with time) 
+ - map(state - city) - image  - status(completed - paid - cancelled)
+ - revoke 
+ - details
+ - showmap :
+ - Notification : 
+ - Edit profile (Image - fname - lname - number - )
+ - Save(checkpassword old )
+ - Save Edit 
+ - logout
+ - translate?????????????
+ - Diskover Nearaby Resturant  (rating - image - name -  address on map details - deposit???????????????????? ) 
+ accorrdby  foodsea ....
+ - Filter Search : people - date - time 
+ - Search box
+ - Show Map : 
+ return list nearest : images large small - name - location - x,y - distanse between location and res
+ - in map : 
+ - searh  box???????????????????? 
+ - search people date time 
+ - 
+
+ filter : 
+ - Sort by Revelance ????????????????????  - Distance 
+ - show following just 
+ - price range
+ - Cuisine Type 
+-----------------------------
+guest :
