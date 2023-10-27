@@ -11,6 +11,7 @@ use App\Models\Menu;
 use App\Models\Image;
 use App\Models\Reservation;
 use App\Models\Reviews;
+use App\Models\Customer;
 
 class HomeController extends Controller
 {
@@ -39,11 +40,13 @@ class HomeController extends Controller
         if(Auth::user()->role_name=="admin")
         {
             $resturants_number=User::Where('role_name','staff')->count();
-            $act='4';
-            $reserv='4';
-            $customers='3';
-            return view('Admin.statistics',compact('resturants_number','act','reserv','customers'));
-            
+            $act=User::Where(
+                ['role_name'=>'staff',
+                'status'=>'active',
+                ])->count();
+            $reserv=Reservation::count();
+            $customers=Customer::count();
+            return view('Admin.statistics',compact('resturants_number','act','reserv','customers'));            
         }
    
     }

@@ -17,23 +17,33 @@ use App\Http\Controllers\Api\UserController;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+
 Route::prefix('customer/')->group(function ()
 {
-           Route::post('register',[AuthController::class,'register'])->name('register_customer');
-           Route::post('ActivateEmail',[AuthController::class,'ActivateEmail']);
-           Route::post('login_customer',[AuthController::class,'Login'])->name('login_customer');
-           Route::group(["middleware"=>['auth:customer-api']],function(){
-           Route::post('reversation/{id}',[UserController::class,'reversation'])->name('reversation');
-           Route::get('details/{id}',[UserController::class,'details'])->name('details');
-           Route::post('reversation_cancel/{id}',[UserController::class,'reversation_cancel'])->name('reversation_cancel');
-           Route::get('search',[UserController::class,'search'])->name('search');
-           Route::get('proposal_resturants',[UserController::class,'proposal_resturants'])->name('proposal_resturants');
-
-
-           Route::get('profile',[AuthController::class,'profile']);
-           Route::post('edit_profile',[AuthController::class,'edit_profile']);
-
-    });
-}
-);
+    Route::post('login',[AuthController::class,'login']);
+    Route::post('register',[AuthController::class,'create'])->name('create');
+    Route::post('verify',[AuthController::class,'verify'])->name('verify');  //WITH LOGIN_NUMBER
+    Route::post('register_complete',[AuthController::class,'register_complete'])->name('register_complete');
+            Route::group(["middleware"=>['auth:customer-api']],function()
+            {
+            Route::get('proposal_resturants',[UserController::class,'proposal_resturants'])->name('proposal_resturants');
+            Route::post('reversation/{id}',[UserController::class,'reversation'])->name('reversation');
+            Route::get('details/{id}',[UserController::class,'details'])->name('details');
+            Route::get('available_reservations/{id}',[UserController::class,'available_reservations'])->name('available_reservations');
+            
+            Route::post('follow/{id}',[UserController::class,'follow'])->name('follow');
+            Route::post('unfollow/{id}',[UserController::class,'unfollow'])->name('unfollow');
+            Route::get('list_rec_follow',[UserController::class,'list_rec_follow'])->name('list_rec_follow');
+            Route::get('my_reservations',[UserController::class,'my_reservations'])->name('my_reservations');
+            Route::post('reversation_cancel/{id}',[UserController::class,'reversation_cancel'])->name('reversation_cancel');
+            Route::post('reversation_details/{id}',[UserController::class,'reversation_details'])->name('reversation_details');
+            Route::get('profile',[AuthController::class,'profile']);
+            Route::post('edit_profile',[AuthController::class,'edit_profile']); //check pass from front 
+            Route::post('map_res',[UserController::class,'map_res']); //check pass from front 
+            Route::get('search',[UserController::class,'search'])->name('search');
+            Route::get('advansearch',[UserController::class,'advansearch'])->name('advansearch');
+            Route::get('filtersearch',[UserController::class,'filtersearch'])->name('filtersearch'); 
+            Route::post('review/{id}',[UserController::class,'review'])->name('review'); 
+            Route::get('reviews/{id}',[UserController::class,'reviews'])->name('reviews'); 
+        }); });
 

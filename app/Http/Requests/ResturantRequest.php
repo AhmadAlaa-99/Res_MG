@@ -27,7 +27,6 @@ class ResturantRequest extends FormRequest
             'phone'=>'required',
             'password'=>'required',
             'description'=>'required',
-            'location'=>'required',
             'Activation_start'=>'required',
             'Activation_end'=>'required',
             'phone_number'=>'required',

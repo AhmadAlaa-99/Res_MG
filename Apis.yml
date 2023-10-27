@@ -1,35 +1,64 @@
-Apis
+in Home : 
+- For You with description : location - age. (ages accept from dashboard resturant) class (resturants)
+- New Opening : just images press (offers add by?? res(all show for user))-. details
+- Offers 
+Offers : id resturant_id type(new open - basic offer) imagesmall imagelarge  description
+offer basic :
+- viewall ? exist
+- FEATURED (rating - reservations)
+- based on your taste (in register not found select taste) algorithm  selected - dynamic
+- Facilites (basic)
+- page booking (selected table(scroll or draw(week)))  replace select persons  
+or can select person just and from back process any table
+- problem times 
+- good booking in discover
+- num_person - date - time.
+
+
+
+
+
+
+
+
+
+
+
+
+
 ------------------------
 as laravel api i need functions :
------
+------------------------------------------------------
 Register : 
 - Register Customer FIELDS :firstname(required - min 7 max 25 ) - lastmname(required - min 7 max 25 ) - phone(required 09********) -
 email(optional - email)
+
 - validation code by phone(resend) - Password - Fingerprint - (allow notification)
 gender(male - female)- profile_picture(optional - Image) - State(REQUIRED) OR Register by facebook.
---------------------------------------
+-------------------------------------------------------
 aNAD Login :
 - Number with validation code send to phone
 - Or Lpgin with Facebook 
----------------------------------------------
-index :
-- Current location - 
-Categories :  name desc
-(same states)(Name - Location - rating(number) - open.close - deposite??)
-- Show : ??3???????????????
-images(large one - small list ) - Name - State - City - Description -  RATING(NUM)-  Reviews (stars mumb - num reviews)
- - viewMap 
- - bOOK NOW (
-    PERSON NUM - DATE - sELECT TIME AVAILABLE 
- )
+-------------------------------------------------------
+- index : 
+all resturants(id cuisine_id  name location rating open.close deposite images) orderby cuisine(id name desc).
+- Show : with(viewMap) ??3???????????????
+images - Name - State - City - Description -  RATING(NUM)-  Reviews (stars mumb - num reviews).
+ - available_reservations : get(reservations available) (PERSON NUM - DATE - sELECT TIME AVAILABLE)
+ ----------------------------------------------------------
  - fOLLOWING : LIST myRESTURANTS - Name - State - City   List Recommend 
  - setFollow : id res 
+ ----------------------------------------------------------
  - Bookings :  Upcoming - History  (num person - date with time) 
  - map(state - city) - image  - status(completed - paid - cancelled)
  - revoke 
  - details
+ ------------------------------------------------------------
  - showmap :
+ ----------------------
  - Notification : 
+ ------------------------------------------------------------------
+ ------------------------------------------
  - Edit profile (Image - fname - lname - number - )
  - Save(checkpassword old )
  - Save Edit 
@@ -39,17 +68,29 @@ images(large one - small list ) - Name - State - City - Description -  RATING(NU
  accorrdby  foodsea ....
  - Filter Search : people - date - time 
  - Search box
- - Show Map : 
+ - Show Map: 
  return list nearest : images large small - name - location - x,y - distanse between location and res
- - in map : 
- - searh  box???????????????????? 
- - search people date time 
- - 
-
- filter : 
+ - in map: 
+ - searh  box????????????????????. 
+ - search people date time.
+ filter :
  - Sort by Revelance ????????????????????  - Distance 
  - show following just 
  - price range
  - Cuisine Type 
------------------------------
+---------------------------------------------------------------
 guest :
+--------------------------------------------------------------------------------------
+PROBLEMS :
+- Active OTP
+- rEGISTER /lOGIN WITH FACEBOOK 
+- ? must login with email - password  / phone - code / email - password (myopinion just facebook or phone)
+- reservation : speacial_request ??
+- price - people  ? search 
+- changes dashboard 
+- checks api controller user 
+- deposit
+- details page 3
+-----------------------------------------------------------------------------------------
+dashboard problems :
+----------------------------------------------------------------------

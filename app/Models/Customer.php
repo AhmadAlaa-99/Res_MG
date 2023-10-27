@@ -16,4 +16,13 @@ class Customer extends Authenticatable
     //     'name','email','password','phone','email_verified_at',
     // ];
     protected $guarded=[];
+
+
+    protected $casts = [
+        'followed_restaurants' => 'array', // Cast to array
+    ];
+
+
+
+    
 }

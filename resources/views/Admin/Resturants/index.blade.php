@@ -77,23 +77,18 @@
                                         <td>
                                             <div>
                                                 <span class="badge light badge-warning">
-                                                    {{ $resturant->location }}
-
+                                                    {{ $resturant->location->state }}
                                                 </span>
-
                                             </div>
                                         </td>
-
                                         <td>
                                             <span class="badge badge-primary">
                                                 {{ $resturant->Cuisine->name }}
                                             </span>
                                         </td>
-
-
                                         <td>
                                             <div class="d-flex align-items-center">
-                                                @if ($resturant->staff->status == 'مفعل')
+                                                @if ($resturant->staff->status == 'active')
                                                     <i class="fa fa-circle text-success me-1"></i>
                                                 @else
                                                     <i class="fa fa-circle text-danger me-1"></i>
@@ -108,14 +103,13 @@
                                                     <svg width="20px" height="20px" viewBox="0 0 24 24" version="1.1">
                                                         <g stroke="none" stroke-width="1" fill="none"
                                                             fill-rule="evenodd">
-                                                            <rect x="0" y="0" width="24"
-                                                                height="24"></rect>
-                                                            <circle fill="#000000" cx="5" cy="12"
-                                                                r="2"></circle>
-                                                            <circle fill="#000000" cx="12" cy="12"
-                                                                r="2"></circle>
-                                                            <circle fill="#000000" cx="19" cy="12"
-                                                                r="2"></circle>
+                                                            <rect x="0" y="0" width="24" height="24"></rect>
+                                                            <circle fill="#000000" cx="5" cy="12" r="2">
+                                                            </circle>
+                                                            <circle fill="#000000" cx="12" cy="12" r="2">
+                                                            </circle>
+                                                            <circle fill="#000000" cx="19" cy="12" r="2">
+                                                            </circle>
                                                         </g>
                                                     </svg>
                                                 </button>
@@ -124,23 +118,25 @@
                                                     <a class="dropdown-item"
                                                         href="{{ route('resturants.show', $resturant->id) }}">Profile
                                                         Details</a>
+                                                        <a class="dropdown-item"
+                                                        href="{{ route('rest_tables', $resturant->id) }}">Tables Management</a>
                                                     <a class="dropdown-item"
                                                         href="{{ route('resturant_reservations', $resturant->id) }}">
                                                         reservaions Details</a>
                                                     <a class="dropdown-item"
                                                         href="{{ route('resturants.edit', $resturant->id) }}"></i>edit</a>
-                                                    
-                                                        <a class="dropdown-item" href="#"
+                                                    <a class="dropdown-item" href="#"
                                                         onclick="event.preventDefault();
                                                                  document.getElementById('destroy-form-{{ $resturant->id }}').submit();">
                                                         Delete
-                                                     </a>
-                                                     <form id="destroy-form-{{ $resturant->id }}" action="{{ route('resturants.destroy', $resturant->id) }}"
-                                                           method="POST" style="display: none;">
+                                                    </a>
+                                                    <form id="destroy-form-{{ $resturant->id }}"
+                                                        action="{{ route('resturants.destroy', $resturant->id) }}"
+                                                        method="POST" style="display: none;">
                                                         @method('DELETE')
                                                         @csrf
-                                                     </form>
-                                                    @if ($resturant->staff->status == 'مفعل')
+                                                    </form>
+                                                    @if ($resturant->staff->status == 'active')
                                                         <a class="dropdown-item"
                                                             href="{{ route('act_inact__resturant', $resturant->id) }}"></i>inActive</a>
                                                     @else
@@ -200,7 +196,7 @@
                                     <td>
                                         <div>
                                             <span class="badge light badge-warning">
-                                                {{ $resturant->location }}
+                                                {{ $resturant->location->state }}
 
                                             </span>
 
@@ -217,7 +213,7 @@
 
                                     <td>
                                         <div class="d-flex align-items-center">
-                                            @if ($resturant->staff->status == 'مفعل')
+                                            @if ($resturant->staff->status == 'active')
                                                 <i class="fa fa-circle text-success me-1"></i>
                                             @else
                                                 <i class="fa fa-circle text-danger me-1"></i>
@@ -232,14 +228,13 @@
                                                 <svg width="20px" height="20px" viewBox="0 0 24 24" version="1.1">
                                                     <g stroke="none" stroke-width="1" fill="none"
                                                         fill-rule="evenodd">
-                                                        <rect x="0" y="0" width="24"
-                                                            height="24"></rect>
-                                                        <circle fill="#000000" cx="5" cy="12"
-                                                            r="2"></circle>
-                                                        <circle fill="#000000" cx="12" cy="12"
-                                                            r="2"></circle>
-                                                        <circle fill="#000000" cx="19" cy="12"
-                                                            r="2"></circle>
+                                                        <rect x="0" y="0" width="24" height="24"></rect>
+                                                        <circle fill="#000000" cx="5" cy="12" r="2">
+                                                        </circle>
+                                                        <circle fill="#000000" cx="12" cy="12" r="2">
+                                                        </circle>
+                                                        <circle fill="#000000" cx="19" cy="12" r="2">
+                                                        </circle>
                                                     </g>
                                                 </svg>
                                             </button>
@@ -255,20 +250,21 @@
                                                     href="{{ route('resturants.edit', $resturant->id) }}"></i>edit</a>
 
 
-                                                
-                                                    <a class="dropdown-item" href="#"
+
+                                                <a class="dropdown-item" href="#"
                                                     onclick="event.preventDefault();
                                                              document.getElementById('destroy-form-{{ $resturant->id }}').submit();">
                                                     Delete
-                                                 </a>
-                                                 <form id="destroy-form-{{ $resturant->id }}" action="{{ route('resturants.destroy', $resturant->id) }}"
-                                                       method="POST" style="display: none;">
+                                                </a>
+                                                <form id="destroy-form-{{ $resturant->id }}"
+                                                    action="{{ route('resturants.destroy', $resturant->id) }}"
+                                                    method="POST" style="display: none;">
                                                     @method('DELETE')
                                                     @csrf
-                                                 </form>
+                                                </form>
 
 
-                                                @if ($resturant->staff->status == 'مفعل')
+                                                @if ($resturant->staff->status == 'active')
                                                     <a class="dropdown-item"
                                                         href="{{ route('act_inact__resturant', $resturant->id) }}"></i>inActive</a>
                                                 @else
@@ -328,7 +324,7 @@
                                     <td>
                                         <div>
                                             <span class="badge light badge-warning">
-                                                {{ $resturant->location }}
+                                                {{ $resturant->location->state }}
 
                                             </span>
 
@@ -345,7 +341,7 @@
 
                                     <td>
                                         <div class="d-flex align-items-center">
-                                            @if ($resturant->staff->status == 'مفعل')
+                                            @if ($resturant->staff->status == 'active')
                                                 <i class="fa fa-circle text-success me-1"></i>
                                             @else
                                                 <i class="fa fa-circle text-danger me-1"></i>
@@ -360,14 +356,13 @@
                                                 <svg width="20px" height="20px" viewBox="0 0 24 24" version="1.1">
                                                     <g stroke="none" stroke-width="1" fill="none"
                                                         fill-rule="evenodd">
-                                                        <rect x="0" y="0" width="24"
-                                                            height="24"></rect>
-                                                        <circle fill="#000000" cx="5" cy="12"
-                                                            r="2"></circle>
-                                                        <circle fill="#000000" cx="12" cy="12"
-                                                            r="2"></circle>
-                                                        <circle fill="#000000" cx="19" cy="12"
-                                                            r="2"></circle>
+                                                        <rect x="0" y="0" width="24" height="24"></rect>
+                                                        <circle fill="#000000" cx="5" cy="12" r="2">
+                                                        </circle>
+                                                        <circle fill="#000000" cx="12" cy="12" r="2">
+                                                        </circle>
+                                                        <circle fill="#000000" cx="19" cy="12" r="2">
+                                                        </circle>
                                                     </g>
                                                 </svg>
                                             </button>
@@ -381,18 +376,19 @@
                                                     Details</a>
                                                 <a class="dropdown-item"
                                                     href="{{ route('resturants.edit', $resturant->id) }}"></i>edit</a>
-                                                 
-                                                    <a class="dropdown-item" href="#"
+
+                                                <a class="dropdown-item" href="#"
                                                     onclick="event.preventDefault();
                                                              document.getElementById('destroy-form-{{ $resturant->id }}').submit();">
                                                     Delete
-                                                 </a>
-                                                 <form id="destroy-form-{{ $resturant->id }}" action="{{ route('resturants.destroy', $resturant->id) }}"
-                                                       method="POST" style="display: none;">
+                                                </a>
+                                                <form id="destroy-form-{{ $resturant->id }}"
+                                                    action="{{ route('resturants.destroy', $resturant->id) }}"
+                                                    method="POST" style="display: none;">
                                                     @method('DELETE')
                                                     @csrf
-                                                 </form>
-                                                @if ($resturant->staff->status == 'مفعل')
+                                                </form>
+                                                @if ($resturant->staff->status == 'active')
                                                     <a class="dropdown-item"
                                                         href="{{ route('act_inact__resturant', $resturant->id) }}"></i>inActive</a>
                                                 @else
@@ -450,7 +446,7 @@
                                     <td>
                                         <div>
                                             <span class="badge light badge-warning">
-                                                {{ $resturant->location }}
+                                                {{ $resturant->location->state }}
 
                                             </span>
 
@@ -498,7 +494,7 @@
                                                 <a class="dropdown-item"
                                                     href="{{ route('resturants.edit', $resturant->id) }}"></i>edit</a>
                                                 <a class="dropdown-item" href="transaction-details.html"></i>Delete</a>
-                                                @if ($resturant->staff->status == 'مفعل')
+                                                @if ($resturant->staff->status == 'active')
                                                     <a class="dropdown-item"
                                                         href="transaction-details.html"></i>inActive</a>
                                                 @else

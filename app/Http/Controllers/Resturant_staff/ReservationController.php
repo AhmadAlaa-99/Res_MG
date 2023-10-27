@@ -12,32 +12,35 @@ use App\Models\times;
 use App\Models\Menu;
 use App\Models\Reservation;
 use App\Models\Reviews;
+use Illuminate\Support\Facades\Validator;
 class ReservationController extends Controller
 {
-    public function today_reservations()
+    public function today_reservations($id)
     {
         $today=Carbon::now();
-        $user_id=Auth::user()->id;
-        $res=Resturant::where('user_id',$user_id)->with('tables')->first();
+        $id=$id;
+        $res=Resturant::where('id',$id)->with('tables')->first();
         $reservations=Reservation::where([
            'reservation_date'=>$today,
-            'resturant_id'=>$res->id,
+            'resturant_id'=>$id,
             ])->with('table')->get(); 
-            $tables = Table::where('resturant_id', $res->id)
+            $tables = Table::where('resturant_id', $id)
             ->whereHas('reservations', function ($query) use ($today) { 
                 $query->whereDate('reservation_date', $today); 
             })->with(['reservations' => function ($query) use ($today) {
                 $query->whereDate('reservation_date', $today);
             }])
             ->get(); 
-            return view('staff.Reservations.index',compact('reservations','tables','today'));
+
+            return view('staff.Reservations.index',compact('reservations','tables','today','id'));
      }
 
     public function date_reservations(Request $request)
     {
         $today=$request->date;
-        $user_id=Auth::user()->id;
-        $res=Resturant::where('user_id',$user_id)->with('tables')->first();
+        $id=$request->res_id;
+        $res=Resturant::where('id',$id)->with('tables')->first();
+
         $reservations=Reservation::where([
             'reservation_date'=>$request->date,
             'resturant_id'=>$res->id,
@@ -54,7 +57,7 @@ class ReservationController extends Controller
             //laravel : problem get all reservations all days not $today just
    
         
-            return view('staff.Reservations.index',compact('reservations','tables','today'));
+            return view('staff.Reservations.index',compact('reservations','tables','today','id'));
     }
     public function delete($id)
     {
@@ -64,11 +67,12 @@ class ReservationController extends Controller
     public function index()
     {}
 
-    public function reservations_generate(Request $request)
+    public function reservations_generate(Request $request,$id)
     {  
-        $resturant = Resturant::where('user_id', Auth::id())->first();
+        $resturant = Resturant::where('id',$id)->first();
         $times=times::where('resturant_id',$resturant->id)->first();
-        return view('staff.work_time',compact('times'));
+        $id=$id;
+        return view('staff.work_time',compact('times','id'));
         }
     //     $resturant=Resturant::where('user_id',Auth::id())->first();
          
@@ -89,16 +93,68 @@ class ReservationController extends Controller
     // }
     // return redirect()->route('today_reservations');
     
-    
+
+public function reservations_regenerate(Request $request)
+{
+    $resturant = Resturant::where('user_id', Auth::id())->first();
+    $times=times::where('resturant_id',$resturant->id)->first();
+    return view('staff.regenerate',compact('times'));
+}
+public function reservations_regenerate_post(Request $request)
+{
+    switch ($request->input('action')) {
+        case 'submit':
+
+            break;
+            case 'generate':
+                return redirect()->route('reservations_generate_get');
+                break;
+                case 'cancel':
+                    return redirect()->route('today_reservations');
+                    break;
+
+}
+}   
     public function reservations_generate_post(Request $request)
     {
         switch ($request->input('action')) {
             case 'submit':
-                
-                $resturant = Resturant::where('user_id', Auth::id())->first();
-                
-                
+         $rules = [
+        'date_start' => 'required|date|after:today',
+        'date_end' => 'required|date|after:date_start|before:+1 month',
 
+        'sun_from' => 'required|date_format:H:i',
+        'sun_to' => 'required|date_format:H:i|after:sun_from',
+
+        'sat_from' => 'required|date_format:H:i',
+        'sat_to' => 'required|date_format:H:i|after:sat_from',
+
+        'mon_from' => 'required|date_format:H:i',
+        'mon_to' => 'required|date_format:H:i|after:mon_from',
+
+        'tue_from' => 'required|date_format:H:i',
+        'tue_to' => 'required|date_format:H:i|after:tue_from',
+
+        'wed_from' => 'required|date_format:H:i',
+        'wed_to' => 'required|date_format:H:i|after:wed_from',
+
+        'thu_from' => 'required|date_format:H:i',
+        'thu_to' => 'required|date_format:H:i|after:thu_from',
+
+        'fri_from' => 'required|date_format:H:i',
+        'fri_to' => 'required|date_format:H:i|after:fri_from',
+    ];
+    // $messages = [
+    //     'date_start.after' => 'تاريخ البداية يجب أن يكون من الغد فقط.',
+    //     'date_end.before' => 'الفترة بين تاريخ البداية وتاريخ النهاية لا يجب أن تتجاوز شهر.',
+    //     'sat_to.after','sun_to.after','mon_to.after' => 'وقت نهاية العمل اليوم  يجب أن يكون بعد وقت البداية.',
+    // ];
+    $validator = Validator::make($request->all(), $rules);
+    if ($validator->fails()) {
+        return redirect()->back()
+            ->withErrors($validator)
+            ->withInput(); }
+                $resturant = Resturant::where('id',$request->res_id)->first();
                 $times = Times::create([
                     'resturant_id' => $resturant->id,
                     'date_start' => $request->date_start,
@@ -128,12 +184,13 @@ class ReservationController extends Controller
                     'thu' => ['from' => $times->thu_from, 'to' => $times->thu_to],
                     'fri' => ['from' => $times->fri_from, 'to' => $times->fri_to],
                 ];
-                foreach ($resturant->tables as $table) {
+                foreach ($resturant->tables as $table) 
+                {
                     $startDate = Carbon::parse($times->date_start);
                     $endDate = Carbon::parse($times->date_end);
                     // حساب الفرق بين تاريخ البداية وتاريخ النهاية بالأيام
                     $daysDiff = $startDate->diffInDays($endDate);
-                  
+                    
                 
                     for ($i = 0; $i <= $daysDiff; $i++) {
                       
@@ -160,14 +217,15 @@ class ReservationController extends Controller
                     }
                     
                     $times=times::where('resturant_id',$resturant->id)->first();
-                       
-        
-                    return view('staff.work_time',compact('times'));
-                return redirect()->route('tables.create');
+                    
+               return redirect()->route('reservations_generate_get',$resturant->id);
                 break;
-    
+             case 'regenerate';
+             return redirect()->route('records_reservations',$request->res_id);
+             
+             break;
             case 'cancel':
-                return redirect()->route('today_reservations');
+                return redirect()->route('today_reservations',$request->res_id);
                 break;
             }
       
@@ -179,6 +237,18 @@ class ReservationController extends Controller
      }
     public function create()
     {
+      
+     
+
+
+              // : input hidden 
+              //   input hidden 
+                //  inpu hidden 
+              // reservation_time input 
+            
+             
+        
+        //
         /*
         return view('staff.Reservations.create');
         */
@@ -218,7 +288,6 @@ class ReservationController extends Controller
         return redirect()->back()->withErrors(['error' => $e->getMessage()]);
  }
  */
- 
     }
     public function edit($id)
     {
@@ -275,5 +344,17 @@ public function reservations_end_ajax($id)
         'status'=>'finite',
     ]);
     return response()->json(['message' => 'Reservation ended successfully']);
+}
+public function records_reservations(Request $request,$id)
+{
+    $times=times::where('resturant_id',$id)->get();
+    $resturant=Resturant::where('id',$id)->first();
+    return view('staff.Reservations.records',compact('times','resturant'));
+}
+public function record_update(Request $request)
+{
+    $time=times::where('id',$request->time);
+    //after accept (relation with time)
+    //reservation : timex
 }
 }

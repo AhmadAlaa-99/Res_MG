@@ -14,20 +14,22 @@ return new class extends Migration
         Schema::create('customers', function (Blueprint $table) {
             $table->id();
             $table->string('firstname');
-            $table->string('lastmname');
-            $table->string('email')->unique()->nullable();;
-             $table->string('password');
+            $table->string('lastname');
+            $table->string('email')->unique()->nullable();
+            $table->string('password')->nullable();
             $table->string('phone');
-            $table->string('gender');
-            $table->string('State');
+            $table->string('gender')->nullable();
+            $table->string('State')->nullable();
             $table->boolean('allow_notify')->default('0');
-            $table->string('avatar');
+            $table->boolean('isVerified')->default('0');
+            $table->string('profile_pic')->nullable();;
+            $table->string('otp')->nullable();;
             $table->timestamp('email_verified_at')->nullable();
+            $table->json('followed_restaurants')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });
     }
-
     /**
      * Reverse the migrations.
      */

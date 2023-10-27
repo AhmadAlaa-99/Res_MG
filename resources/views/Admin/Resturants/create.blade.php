@@ -32,7 +32,7 @@
                                             </label>
                                             <div class="col-lg-6">
                                                 <input type="text" class="form-control" id="validationCustom01"
-                                                    placeholder="Enter a username.." name="user_name" required="">
+                                                    placeholder="Enter a username.." value="testname"name="user_name" required="">
                                                 @error('user_name')
                                                     <div class="alert alert-danger">{{ $message }}</div>
                                                 @enderror
@@ -47,7 +47,7 @@
                                             </label>
                                             <div class="col-lg-6">
                                                 <input type="text" class="form-control" name="email"
-                                                    id="validationCustom02" placeholder="Your valid email.." required="">
+                                                    id="validationCustom02" value="testname@gmail.com" placeholder="Your valid email.." required="">
                                                 @error('email')
                                                     <div class="alert alert-danger">{{ $message }}</div>
                                                 @enderror
@@ -78,7 +78,7 @@
                                             </label>
                                             <div class="col-lg-6">
                                                 <input type="text" class="form-control" id="validationCustom08"
-                                                    placeholder="963-9376-07234" name="user_phone" required="">
+                                                    placeholder="963-9376-07234" value="0976768877"name="user_phone" required="">
                                                 @error('user_phone')
                                                     <div class="alert alert-danger">{{ $message }}</div>
                                                 @enderror
@@ -87,25 +87,79 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-xl-12">
-                                            <style>
-                                                .sub {
-                                                    display: inline-block;
-                                                }
-                                            </style>
-                                            <div class="mb-6 row sub " style="color: black">
-                                                <div class="col-lg-8 ms-auto">
-                                                    <button type="submit" name="action" value="more_add"
-                                                        class="btn btn-primary">submit And add more</button>
-                                                </div>
-                                            </div>
-                                            <div class="mb-6 row sub">
-                                                <div class="col-lg-8 ms-auto">
-                                                    <button type="submit" name="action" value="add_and_cancel"
-                                                        class="btn btn-danger">submit And Cancel</button>
+                                        <div class="mb-3 row">
+                                            <label class="col-lg-4 col-form-label" for="validationCustom08">State
+                                                <span class="text-danger">*</span>
+                                            </label>
+                                            <div class="col-lg-6">
+
+                                                <select class="default-select wide form-control" name="state"
+                                                    id="validationCustom05">
+                                                    <option data-display="Select">Please select</option>
+                                                    <option selected value="Damascus">Damascus</option>
+                                                    <option value="Homs">Homs</option>
+                                                    <option value="Lattakia">Lattakia</option>
+                                                    <option value="Aleppo">Aleppo</option>
+                                                    <option value="Tartus">Tartus</option>
+                                                    <option value="As-suwayda">As-suwayda</option>
+                                                </select>
+
+                                                @error('state')
+                                                    <div class="alert alert-danger">{{ $message }}</div>
+                                                @enderror
+                                                <div class="invalid-feedback">
+                                                    Please enter a state.
                                                 </div>
                                             </div>
                                         </div>
+
+                                        <div class="mb-3 row">
+                                            <label class="col-lg-4 col-form-label" for="validationCustom08">Location (TEXT)
+                                                <span class="text-danger">*</span>
+                                            </label>
+                                            <div class="col-lg-6">
+                                                <input type="text" class="form-control" id="validationCustom08"
+                                                    placeholder="location details" value="testlocation" name="location" required="">
+                                                @error('location')
+                                                    <div class="alert alert-danger">{{ $message }}</div>
+                                                @enderror
+                                                <div class="invalid-feedback">
+                                                    Please enter a location.
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="mb-3 row">
+                                            <label class="col-lg-4 col-form-label" for="validationCustom08">Latitude
+                                                <span class="text-danger">*</span>
+                                            </label>
+                                            <div class="col-lg-6">
+                                                <input type="text" class="form-control" id="latitude"
+                                                    placeholder="latitude" value="0.0"name="latitude" required="">
+                                                @error('latitude')
+                                                    <div class="alert alert-danger">{{ $message }}</div>
+                                                @enderror
+                                                <div class="invalid-feedback">
+                                                    Please enter a latitude.
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="mb-3 row">
+                                            <label class="col-lg-4 col-form-label" for="validationCustom08">Longitude
+                                                <span class="text-danger">*</span>
+                                            </label>
+                                            <div class="col-lg-6">
+                                                <input type="text" name="longitude" id="longitude"
+                                                    class="form-control" value="0.0" placeholder="longitude" required="">
+                                                @error('longitude')
+                                                    <div class="alert alert-danger">{{ $message }}</div>
+                                                @enderror
+
+                                                <div class="invalid-feedback">
+                                                    Please enter a longitude.
+                                                </div>
+                                            </div>
+                                        </div>
+
                                     </div>
                                     <div class="col-xl-6">
                                         <div class="mb-3 row">
@@ -114,7 +168,7 @@
                                             </label>
                                             <div class="col-lg-6">
                                                 <input type="text" name="resturant_name" class="form-control"
-                                                    id="validationCustom06" placeholder="resturant_name" required>
+                                                    id="validationCustom06" value="test_resname"placeholder="resturant_name" required>
                                                 <div class="invalid-feedback">
                                                     @error('resturant_name')
                                                         <div class="alert alert-danger">{{ $message }}</div>
@@ -129,7 +183,7 @@
                                             </label>
                                             <div class="col-lg-6">
                                                 <input type="text" class="form-control" id="validationCustom08"
-                                                    placeholder="963-9376-07234" name="resturant_phone" required="">
+                                                    placeholder="963-9376-07234" value="0999999999" name="resturant_phone" required="">
                                                 @error('resturant_phone')
                                                     <div class="alert alert-danger">{{ $message }}</div>
                                                 @enderror
@@ -146,12 +200,9 @@
                                                 <select class="default-select wide form-control" name="cuisine_id"
                                                     id="validationCustom05">
                                                     <option data-display="Select">Please select</option>
-
                                                     @foreach ($cuisins as $cuisin)
                                                         <option value="{{ $cuisin->id }}">{{ $cuisin->name }}</option>
                                                     @endforeach
-
-
                                                 </select>
                                                 @error('cuisine_id')
                                                     <div class="alert alert-danger">{{ $message }}</div>
@@ -166,7 +217,7 @@
                                                 <span class="text-danger">*</span>
                                             </label>
                                             <div class="col-lg-6">
-                                                <input type="text" name="description"class="form-control"
+                                                <input type="text" value="desc" name="description"class="form-control"
                                                     id="validationCustom07" placeholder="description" required="">
                                                 @error('description')
                                                     <div class="alert alert-danger">{{ $message }}</div>
@@ -177,20 +228,35 @@
                                             </div>
                                         </div>
                                         <div class="mb-3 row">
-                                            <label class="col-lg-4 col-form-label" for="validationCustom09">location <span
-                                                    class="text-danger">*</span>
+                                            <label class="col-lg-4 col-form-label" for="validationCustom07">Deposite
+                                                <span class="text-danger">*</span>
                                             </label>
                                             <div class="col-lg-6">
-                                                <input type="text" class="form-control"name="location"
-                                                    id="validationCustom09" placeholder="location" required="">
-                                                @error('location')
+                                                <input type="number" value="15" name="deposite"class="form-control"
+                                                    id="validationCustom07" placeholder="deposite" required="">
+                                                @error('deposite')
                                                     <div class="alert alert-danger">{{ $message }}</div>
                                                 @enderror
                                                 <div class="invalid-feedback">
-                                                    Please enter a location.
+                                                    Please enter a deposite.
                                                 </div>
                                             </div>
                                         </div>
+                                        <!-- <div class="mb-3 row">
+                                                                <label class="col-lg-4 col-form-label" for="validationCustom09">location <span
+                                                                        class="text-danger">*</span>
+                                                                </label>
+                                                                <div class="col-lg-6">
+                                                                    <input type="text" class="form-control"name="location"
+                                                                        id="validationCustom09" placeholder="location" required="">
+                                                                    @error('location')
+        <div class="alert alert-danger">{{ $message }}</div>
+    @enderror
+                                                                    <div class="invalid-feedback">
+                                                                        Please enter a location.
+                                                                    </div>
+                                                                </div>
+                                                            </div> -->
                                         <div class="mb-3 row">
                                             <label class="col-lg-4 col-form-label"
                                                 for="validationCustom09">Activation_start <span
@@ -224,17 +290,63 @@
                                             </div>
                                         </div>
                                         <div class="input-group mb-3">
-                                            <span class="input-group-text">Upload</span>
-                                            <div class="form-file">
-                                                <input type="file" name="images[]" accept="image/*"
+                                          <label class="col-lg-4 col-form-label" for="validationCustom09">Images(Craousal)
+                                                <span class="text-danger">*</span>
+                                            </label>
+                                            <div class="col-lg-6">
+                                                <input type="file" name="images[]" accept="images/*"
                                                     class="form-file-input form-control" multiple>
+                                                @error('images')
+                                                    <div class="alert alert-danger">{{ $message }}</div>
+                                                @enderror
+                                                <div class="invalid-feedback">
+                                                    Please enter a images.
+                                                </div>
                                             </div>
+                                        </div>
+                                        <div class="input-group mb-3">
+                                          <label class="col-lg-4 col-form-label" for="validationCustom09">Image(Logo)
+                                                <span class="text-danger">*</span>
+                                            </label>
+                                            <div class="col-lg-6">
+                                                <input type="file" name="logo" accept="images/*"
+                                                    class="form-file-input form-control">
+                                                @error('logo')
+                                                    <div class="alert alert-danger">{{ $message }}</div>
+                                                @enderror
+                                                <div class="invalid-feedback">
+                                                    Please enter a logo.
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-12 col-sm-6 col-12">
+                                        <div id="map" style="height: 400px;     margin-bottom: 15px;"></div>
+                                    </div>
+
+                                </div>
+                                <div class="col-xl-12">
+                                    <style>
+                                        .sub {
+                                            display: inline-block;
+                                        }
+                                    </style>
+                                    <div class="mb-6 row sub " style="color: black">
+                                        <div class="col-lg-8 ms-auto">
+                                            <button type="submit" name="action" value="more_add"
+                                                class="btn btn-primary">submit And add more</button>
+                                        </div>
+                                    </div>
+                                    <div class="mb-6 row sub">
+                                        <div class="col-lg-8 ms-auto">
+                                            <button type="submit" name="action" value="add_and_cancel"
+                                                class="btn btn-danger">submit And Cancel</button>
                                         </div>
                                     </div>
                                 </div>
                             </form>
                         </div>
-                      
+
                     </div>
                 </div>
             </div>
@@ -242,6 +354,23 @@
 
     </div>
     </div>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var map = L.map('map').setView([33.5138, 36.2765], 10);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">
+                OpenStreetMap</a> contributors'
+            }).addTo(map);
+
+            map.on('click', function(e) {
+                document.getElementById('latitude').value = e.latlng.lat;
+                document.getElementById('longitude').value = e.latlng.lng;
+            });
+        });
+    </script>
+
 @endsection
 @section('js')
 @endsection

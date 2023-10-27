@@ -9,4 +9,8 @@ class times extends Model
 {
     use HasFactory;
     protected $guarded=[''];
+    public function resturant()  //resturant
+    {
+        return $this->belongsToMany(Resturant::class,'resturant_id');
+    }
 }

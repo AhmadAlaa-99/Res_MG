@@ -22,6 +22,7 @@ return new class extends Migration
             
             $table->bigInteger('resturant_id')->unsigned();
             $table->foreign('resturant_id')->references('id')->on('resturants')->onDelete('cascade');
+            
             $table->string('speacial_request')->nullable();
             $table->string('actual_price')->nullable();
             $table->string('reservation_time'); //(9\12\2023 4:32 PM)

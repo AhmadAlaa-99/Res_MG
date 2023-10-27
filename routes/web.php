@@ -2,6 +2,9 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\RoleController;
+use App\Http\Controllers\Admin\CuisineController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Resturant_staff\DashboardController as staff_DashboardController ;
 use App\Http\Controllers\Resturant_staff\ReservationController as staff_ReservationController ;
@@ -37,11 +40,14 @@ Route::group([
     //'middleware' => 'auth:admnin',
     'middleware' => ['auth'],
 ], function() {
- 
     Route::resource('resturants', DashboardController::class);
-
     Route::resource('reservations', DashboardController::class);
+    Route::resource('cuisines', CuisineController::class);
 
+    Route::resource('users', UserController::class);
+    Route::resource('roles', RoleController::class);
+
+    Route::get('/managers', [UserController::class, 'managers'])->name('managers');
     Route::get('/', [DashboardController::class, 'statistics'])->name('statistics');
     Route::get('/staff_all', [DashboardController::class, 'staff_all'])->name('staff_all');
     Route::get('/customers', [DashboardController::class, 'customers'])->name('customers');
@@ -56,30 +62,28 @@ Route::group([
     Route::get('/act_inact__resturant/{id}', [DashboardController::class, 'act_inact__resturant'])->name('act_inact__resturant');  //id resturant
     Route::get('/admin_profile', [DashboardController::class, 'admin_profile'])->name('admin_profile');
     Route::get('/resturant_reservations/{id}', [DashboardController::class, 'resturant_reservations'])->name('resturant_reservations');
-
-
     Route::get('/all_notifications', [DashboardController::class, 'all_notifications'])->name('all_notifications');
     Route::post('/date_reservations/{id}', [DashboardController::class, 'dat_reservations'])->name('dat_reservations');
-    
-
-
 
 
     Route::any('user/notifications/get', [DashboardController::class, 'getNotifications'])->name('getNotifications');
     Route::any('user/notifications/read', [DashboardController::class, 'markAsRead'])->name('markAsRead');
     Route::any('/user/notifications/read/{id}', [DashboardController::class, 'markAsReadAndRedirect'])->name('markAsReadAndRedirect');
 
-
-
-
     ////////staff 
     Route::resource('tables', staff_TableController::class);
     Route::get('/today_tables/{id}', [staff_TableController::class, 'today_tables'])->name('today_tables');	
     Route::post('/date_tables/{id}', [staff_TableController::class, 'date_tables'])->name('date_tables');	
 
-    
-    Route::get('/reservations_generate', [staff_ReservationController::class, 'reservations_generate'])->name('reservations_generate_get');	
-    Route::post('/reservations_generate', [staff_ReservationController::class, 'reservations_generate_post'])->name('reservations_generate_post');	
+
+    Route::get('/reservations_generate/{id}', [staff_ReservationController::class, 'reservations_generate'])->name('reservations_generate_get');	
+    Route::post('/reservations_generate', [staff_ReservationController::class, 'reservations_generate_post'])->name('reservations_generate_post');
+    Route::get('/record_update', [staff_ReservationController::class, 'record_update'])->name('record_update');	
+    Route::get('/records_reservations/{id}', [staff_ReservationController::class, 'records_reservations'])->name('records_reservations');
+
+
+    Route::get('/reservations_regenerate', [staff_ReservationController::class, 'reservations_regenerate'])->name('reservations_regenerate_get');	
+    Route::post('/reservations_regenerate', [staff_ReservationController::class, 'reservations_regenerate_post'])->name('reservations_regenerate_post');	
 
 
 
@@ -91,9 +95,9 @@ Route::group([
     Route::get('/reservations_start_ajax/{id}', [staff_ReservationController::class, 'reservations_start_ajax'])->name('reservations_start_ajax');
     Route::get('/reservations_end_ajax/{id}', [staff_ReservationController::class, 'reservations_end_ajax'])->name('reservations_end_ajax');
 
-
+    
     Route::resource('reservations', staff_ReservationController::class);
-    Route::get('/today_reservations', [staff_ReservationController::class, 'today_reservations'])->name('today_reservations');	
+    Route::get('/today_reservations/{id}', [staff_ReservationController::class, 'today_reservations'])->name('today_reservations');	
     Route::post('/date_reservations', [staff_ReservationController::class, 'date_reservations'])->name('date_reservations');	
 
     Route::get('/staff_statistics', [staff_DashboardController::class, 'staff_statistics'])->name('staff_statistics');

@@ -144,17 +144,23 @@
                     @csrf
                     <div class="card border-0">
                         <div class="row px-3">
-
                             <div class="col-sm-10 list">
                                 <div class="mb-2 row justify-content-between px-3">
-
                                     <div class="mob"> <label class="text-grey mr-1">From</label>
-                                        <input class="ml-1" type="date" 
-                                            value="{{ $times->date_start ?? ('-' ?? '-') }}"name="date_start">
+                                        <input class="ml-1" type="date"
+                                            value="{{ $times->date_start ?? '08-10-2023' }}"name="date_start">
+                                        @error('date_start')
+                                            <div class="alert alert-danger">{{ $message }}</div>
+                                        @enderror
+
                                     </div>
-                                    <div class="mob mb-2"> <label class="text-grey mr-4">To</label> <input
-                                            class="ml-1" value="{{ $times->date_end ?? '-' }}" type="date" 
-                                            name="date_end"> </div>
+                                    <div class="mob mb-2"> <label class="text-grey mr-4">To</label>
+                                        <input class="ml-1" value="{{ $times->date_end ?? '08-10-2023' }}"
+                                            type="date" name="date_end">
+                                        @error('date_end')
+                                            <div class="alert alert-danger">{{ $message }}</div>
+                                        @enderror
+                                    </div>
                                     <div class="text-danger"></div>
                                 </div>
                             </div>
@@ -165,13 +171,24 @@
                                 <div class="mb-2 row justify-content-between px-3">
                                     <option value="opt2">Sat.</option>
                                     <div class="mob"> <label class="text-grey mr-1">From</label> <input
-                                            class="ml-1" type="time" value="{{ $times->sat_from ?? '-' }}"
+                                            class="ml-1" type="time" value="{{ $times->sat_from ?? '14:00' }}"
                                             name="sat_from"> </div>
+
+
                                     <div class="mob mb-2"> <label class="text-grey mr-4">To</label> <input
-                                            class="ml-1" type="time" value="{{ $times->sat_to ?? '-' }}"
-                                            name="sat_to"> </div>
-                                    <div class="text-danger"></div>
+                                            class="ml-1" type="time" value="{{ $times->sat_to ?? '23:00' }}"
+                                            name="sat_to">
+
+                                    </div>        
+                
+                                                    
+                                    <div class="text-danger">
+                                      @error('sat_to')
+                                        <div class="alert alert-danger">{{ $message }}</div>
+                                    @enderror
+                                    </div>
                                 </div>
+                                  
                             </div>
                         </div>
                         <div class="row px-3">
@@ -182,12 +199,16 @@
                                     <option value="opt2">Sund.</option>
 
                                     <div class="mob"> <label class="text-grey mr-1">From</label> <input
-                                            class="ml-1" type="time" value="{{ $times->sun_from ?? '-' }}"
+                                            class="ml-1" type="time" value="{{ $times->sun_from ?? '14:00' }}"
                                             name="sun_from"> </div>
                                     <div class="mob mb-2"> <label class="text-grey mr-4">To</label> <input
-                                            class="ml-1" type="time" value="{{ $times->sun_to ?? '-' }}"
+                                            class="ml-1" type="time" value="{{ $times->sun_to ?? '23:00' }}"
                                             name="sun_to"> </div>
-                                    <div class="text-danger"></div>
+                                    <div class="text-danger">
+                                        @error('sun_to')
+                                        <div class="alert alert-danger">{{ $message }}</div>
+                                    @enderror
+                                    </div>
                                 </div>
                             </div>
 
@@ -200,12 +221,16 @@
                                     <option value="opt1">Mon.</option>
 
                                     <div class="mob"> <label class="text-grey mr-1">From</label> <input
-                                            class="ml-1" type="time" value="{{ $times->mon_from ?? '-' }}"
+                                            class="ml-1" type="time" value="{{ $times->mon_from ?? '14:00' }}"
                                             name="mon_from"> </div>
                                     <div class="mob mb-2"> <label class="text-grey mr-4">To</label> <input
-                                            class="ml-1" type="time"value="{{ $times->mon_to ?? '-' }}"
+                                            class="ml-1" type="time"value="{{ $times->mon_to ?? '23:00' }}"
                                             name="mon_to"> </div>
-                                    <div class="text-danger"></div>
+                                    <div class="text-danger">
+                                        @error('mon_to')
+                                        <div class="alert alert-danger">{{ $message }}</div>
+                                    @enderror
+                                    </div>
                                 </div>
                             </div>
 
@@ -216,12 +241,16 @@
                                 <div class="mb-2 row justify-content-between px-3">
                                     <option value="opt2">Tue.</option>
                                     <div class="mob"> <label class="text-grey mr-1">From</label> <input
-                                            class="ml-1" type="time"value="{{ $times->tue_from ?? '-' }}"
+                                            class="ml-1" type="time"value="{{ $times->tue_from ?? '14:00' }}"
                                             name="tue_from"> </div>
                                     <div class="mob mb-2"> <label class="text-grey mr-4">To</label> <input
-                                            class="ml-1" type="time" value="{{ $times->tue_to ?? '-' }}"
+                                            class="ml-1" type="time" value="{{ $times->tue_to ?? '23:00' }}"
                                             name="tue_to"> </div>
-                                    <div class="text-danger"></div>
+                                    <div class="text-danger">
+                                        @error('tue_to')
+                                        <div class="alert alert-danger">{{ $message }}</div>
+                                    @enderror
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -231,12 +260,17 @@
                                 <div class="mb-2 row justify-content-between px-3">
                                     <option value="opt1">Wed.</option>
                                     <div class="mob"> <label class="text-grey mr-1">From</label> <input
-                                            class="ml-1" type="time" value="{{ $times->wed_from ?? '-' }}"
+                                            class="ml-1" type="time" value="{{ $times->wed_from ?? '14:00' }}"
                                             name="wed_from"> </div>
                                     <div class="mob mb-2"> <label class="text-grey mr-4">To</label> <input
-                                            class="ml-1" type="time" value="{{ $times->wed_to ?? '-' }}"
+                                            class="ml-1" type="time" value="{{ $times->wed_to ?? '23:00' }}"
                                             name="wed_to"> </div>
-                                    <div class="text-danger"></div>
+                                            <input type="hidden" value="{{$id}}" name="res_id">
+                                    <div class="text-danger">
+                                        @error('wed_to')
+                                        <div class="alert alert-danger">{{ $message }}</div>
+                                    @enderror
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -246,12 +280,16 @@
                                 <div class="mb-2 row justify-content-between px-3">
                                     <option value="opt2">Thu.</option>
                                     <div class="mob"> <label class="text-grey mr-1">From</label> <input
-                                            class="ml-1" type="time" value="{{ $times->thu_from ?? '-' }}"
+                                            class="ml-1" type="time" value="{{ $times->thu_from ?? '14:00' }}"
                                             name="thu_from"> </div>
                                     <div class="mob mb-2"> <label class="text-grey mr-4">To</label> <input
-                                            class="ml-1" type="time" value="{{ $times->thu_to ?? '-' }}"
+                                            class="ml-1" type="time" value="{{ $times->thu_to ?? '23:00' }}"
                                             name="thu_to"> </div>
-                                    <div class="text-danger"></div>
+                                    <div class="text-danger">
+                                        @error('thu_to')
+                                        <div class="alert alert-danger">{{ $message }}</div>
+                                    @enderror
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -261,18 +299,26 @@
                                 <div class="mb-2 row justify-content-between px-3">
                                     <option value="opt1">Fri.</option>
                                     <div class="mob"> <label class="text-grey mr-1">From</label> <input
-                                            class="ml-1" type="time" value="{{ $times->fri_from ?? '-' }}"
+                                            class="ml-1" type="time" value="{{ $times->fri_from ?? '14:00' }}"
                                             name="fri_from"> </div>
                                     <div class="mob mb-2"> <label class="text-grey mr-4">To</label> <input
-                                            class="ml-1" type="time" value="{{ $times->fri_to ?? '-' }}"
+                                            class="ml-1" type="time" value="{{ $times->fri_to ?? '23:00' }}"
                                             name="fri_to"> </div>
-                                    <div class="text-danger"></div>
+                                    <div class="text-danger">
+                                      @error('fri_to')
+                                        <div class="alert alert-danger">{{ $message }}</div>
+                                    @enderror
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="row px-3 mt-3 justify-content-center"> <button
-                            type="submit" name="action" value="cancel" class="btn exit mr-2">Cancel</button>
-                            <button type="submit" name="action" value="submit"class="btn btn-success ml-2">Done</button>
+                        <div class="row px-3 mt-3 justify-content-center">
+                            <button type="submit" name="action"
+                                value="submit"class="btn btn-success ml-2">Done</button>
+                                    <button type="submit" name="action"
+                                value="regenerate"class="btn btn-danger ml-2">Records</button>
+                                      <button type="submit" name="action"
+                                value="cancel" class="btn exit ml-2">Cancel</button>
                         </div>
                     </div>
                 </form>
@@ -286,7 +332,6 @@
     <script type='text/javascript' src='#'></script>
     <script type='text/javascript'>
         $(document).ready(function() {
-
             $('.add').click(function() {
                 $(".list").append(
                     '<div class="mb-2 row justify-content-between px-3">' +

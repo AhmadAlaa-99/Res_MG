@@ -15,7 +15,9 @@
                         <div class="card">
                             <div class="card-header d-block d-sm-flex border-0">
                                 <div class="me-3">
-                                    <button type="button" class="btn btn-rounded btn-outline-danger"><h4 class="card-title mb-2">Date : {{ $today }}</h4></button>
+                                    <button type="button" class="btn btn-rounded btn-outline-danger">
+                                        <h4 class="card-title mb-2">Date : {{ $today }}</h4>
+                                    </button>
                                 </div>
                                 <div class="card-tabs mt-3 mt-sm-0">
                                     <ul class="nav nav-tabs" role="tablist">
@@ -23,9 +25,16 @@
                                         <li class="nav-item">
                                             <a href="javascript:void()" data-bs-toggle="modal"
                                                 data-bs-target="#add-category" class="btn btn-primary btn-event w-100">
-                                                <span class="align-middle"></span>Select a day
+                                                <span class="align-middle"></span>Select a day 
                                             </a>
-                                        </li>
+                                        </li> 
+                                        <li class="nav-item">
+                                            <a href="{{route('reservations_generate_get',$id)}}"
+                                                class="btn btn-primary d-sm-inline-block d-none  " alt="Transparent MDB Logo"
+                                                id="animated-img1">
+                                                Reservations Management
+                                                <i class="las la-signal ms-3 scale5"></i></a>
+                                        </li>    
                                     </ul>
                                 </div>
                             </div>
@@ -71,35 +80,36 @@
                                                             <div class="me-3 mb-3">
                                                                 <p class="fs-12 mb-2">Custumer Email</p>
                                                                 <span class="font-w500">
-                                                                 
-                                                                     {{$reservation->user->name ?? "Not Available" }}
+
+                                                                    {{ $reservation->user->name ?? 'Not Available' }}
                                                                 </span>
                                                             </div>
                                                             <div class="me-3 mb-3">
                                                                 <p class="fs-12 mb-2">Custumer Phone</p>
                                                                 <span class="font-w500">
-                                                                
-                                                                     {{$reservation->user->phone ?? "Not Available"}}
+
+                                                                    {{ $reservation->user->phone ?? 'Not Available' }}
                                                                 </span>
                                                             </div>
                                                             <div class="me-3 mb-3">
                                                                 <p class="fs-12 mb-2">party size</p>
                                                                 <span
-                                                                    class="font-w500">{{$reservation->party_size ?? "Not Available" }}</span>
+                                                                    class="font-w500">{{ $reservation->party_size ?? 'Not Available' }}</span>
                                                             </div>
-                                                               {{-- @if($reservation->status== "next" || $reservation->status== "scheduled")
+                                                            {{-- @if ($reservation->status == 'next' || $reservation->status == 'scheduled')
                                                             <div class="me-3 mb-3">
                                                             <a href="{{route('reservations_start',$reservation->id)}}" class="btn btn-primary btn-xxs shadow">Start</a>
                                                             </div>
                                                             @endif
-                                                            @if($reservation->status== "current")
+                                                            @if ($reservation->status == 'current')
                                                             <div class="me-3 mb-3">
                                                             <a href="{{route('reservations_end',$reservation->id)}}" class="btn btn-danger btn-xxs shadow">End</a>
                                                             </div>
                                                             @endif --}}
                                                             <div class="me-3 mb-3">
-                                                                <a href="{{route('reservations.show',$reservation->id)}}" class="btn btn-warning btn-xxs shadow">Details</a>
-                                                                </div>
+                                                                <a href="{{ route('reservations.show', $reservation->id) }}"
+                                                                    class="btn btn-warning btn-xxs shadow">Details</a>
+                                                            </div>
                                                             <div class="info mb-3">
                                                                 <svg class="me-3" width="24" height="24"
                                                                     viewbox="0 0 24 24" fill="none"
@@ -117,13 +127,12 @@
 
                                                                 <p class="mb-0 fs-14">
                                                                     special requests:
-                                                                    {{ $reservation->speacial_request ?? "Not Available" }}
+                                                                    {{ $reservation->speacial_request ?? 'Not Available' }}
 
                                                                 </p>
                                                             </div>
                                                         </div>
                                                     </div>
-                                              
                                                 @endforeach
                                                 </br>
                                             </div>
@@ -145,7 +154,7 @@
                             <h4 class="modal-title"><strong>Select a day</strong></h4>
                         </div>
                         <div class="modal-body">
-                            <form method="post" action="{{ route('dat_reservations',$id) }}" autocomplete="off"
+                            <form method="post" action="{{ route('dat_reservations', $id) }}" autocomplete="off"
                                 enctype="multipart/form-data">
                                 @csrf
                                 <div class="row">

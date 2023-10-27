@@ -11,8 +11,6 @@
         <div class="row">
             <div class="col-xl-9 col-xxl-12">
                 <div class="row">
-
-
                     <div class="col-xl-12">
                         <div class="card">
                             <div class="card-header d-block d-sm-flex border-0">
@@ -20,7 +18,6 @@
                                     <button type="button" class="btn btn-rounded btn-outline-danger">
                                         <h4 class="card-title mb-2">Date : {{ $today }}</h4>
                                     </button>
-
                                     {{-- <span class="fs-12"></span> --}}
                                 </div>
                                 <div class="card-tabs mt-3 mt-sm-0">
@@ -35,13 +32,14 @@
                                     </ul>
                                 </div>
                             </div>
-                            @foreach ($tables as $table)
+                            @foreach ($tables as $index => $table)
                                 <div class="card-body tab-content p-0">
                                     <div class="tab-pane fade active show" id="monthly" role="tabpanel">
-                                        <div id="accordion-one" class="accordion style-1">
+                                        <div id="accordion-one-{{ $index }}" class="accordion style-1">
                                             <div class="accordion-item">
                                                 <div class="accordion-header collapsed" data-bs-toggle="collapse"
-                                                    data-bs-target="#default_collapseOne1" style="background: #f6f6f6;">
+                                                    data-bs-target="#default_collapseOne1-{{ $index }}"
+                                                    aria-expanded="false">
                                                     <div class="d-flex align-items-center">
                                                         <div class="profile-image">
                                                             <img src="{{ URL::asset('dashboard/images/avatar/R.jpg') }}"
@@ -58,12 +56,13 @@
                                                     <span>seating_configuration : {{ $table->seating_configuration }}
                                                     </span>
                                                     <span>capacity : {{ $table->capacity }} </span>
-                                                    <a class="btn btn-danger light" href="javascript:void(0);">Details</a>
+                                                    <a class="btn btn-danger light" href="javascript:void(0);"
+                                                        onclick="toggleAccordion({{ $index }})">Details</a>
                                                     <span class="accordion-header-indicator"></span>
                                                 </div>
                                                 @foreach ($table->reservations as $reservation)
-                                                    <div id="default_collapseOne1" class="collapse accordion_body show"
-                                                        data-bs-parent="#accordion-one">
+                                                    <div id="default_collapseOne1-{{ $index }}"
+                                                        class="collapse accordion_body" data-bs-parent="#accordion-one">
                                                         <div class="payment-details accordion-body-text">
                                                             <div class="me-3 mb-3">
                                                                 <p class="fs-12 mb-2">Time</p>
@@ -107,14 +106,28 @@
                                                             </div>
                                                             @endif --}}
                                                             @if ($reservation->status == 'next' || $reservation->status == 'scheduled')
-                                                                <div class="me-3 mb-3">
+                                                                <div class="me-1 mb-1">
 
                                                                     <button id="startButton_{{ $reservation->id }}"
                                                                         onclick="startReservation({{ $reservation->id }})"
                                                                         class="btn btn-primary btn-xxs shadow">Start</button>
                                                                 </div>
+
+                                                                <div class="me-1 mb-1">
+
+                                                                    <button id="startButton_{{ $reservation->id }}"
+                                                                        onclick="startReservation({{ $reservation->id }})"
+                                                                        class="btn btn-warning btn-xxs shadow">Edit</button>
+                                                                </div>
+
+                                                                <div class="me-1 mb-1">
+
+                                                                    <button id="startButton_{{ $reservation->id }}"
+                                                                        onclick="startReservation({{ $reservation->id }})"
+                                                                        class="btn btn-danger btn-xxs shadow">Delete</button>
+                                                                </div>
                                                             @endif
-                                                          
+
                                                             @if ($reservation->status == 'current')
                                                                 <div class="me-3 mb-3">
                                                                     <button id="endButton_{{ $reservation->id }}"
@@ -128,7 +141,7 @@
                                                                     class="btn btn-danger btn-xxs shadow"
                                                                     style="display:none">End</button>
                                                             </div>
-                                                          
+
 
 
                                                             <div class="me-3 mb-3">
@@ -186,6 +199,7 @@
                                     <div class="col-md-12">
                                         <label class="control-label form-label">Date</label>
                                         <input class="form-control form-white" type="date" name="date" required>
+                                        <input type="text" value="{{$id}}" name="res_id">
                                     </div>
 
                                 </div>
@@ -203,7 +217,6 @@
 
         </div>
     </div>
-
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         function startReservation(id) {
@@ -215,6 +228,10 @@
                     $('#endButton_' + id).show();
                     $('#reservationStatus_' + id).text('current');
                     document.getElementById("endButton_" + reservationId).style.display = "";
+                    
+                    // إخفاء زري Edit و Delete
+                    $('#editButton_' + id).hide();
+                    $('#deleteButton_' + id).hide();
                 },
                 error: function(error) {
                     alert('An error occurred');
@@ -223,6 +240,7 @@
             });
         }
     </script>
+    
     <script>
         function endReservation(id) {
             $.ajax({
@@ -239,6 +257,23 @@
             });
         }
     </script>
+    <script>
+        function toggleAccordion(index) {
+            const header = document.querySelector(`#accordion-one-${index} .accordion-header`);
+            const body = document.querySelector(`#default_collapseOne1-${index}`);
+
+            if (header.classList.contains('collapsed')) {
+                header.classList.remove('collapsed');
+                header.setAttribute('aria-expanded', 'true');
+                body.classList.add('show');
+            } else {
+                header.classList.add('collapsed');
+                header.setAttribute('aria-expanded', 'false');
+                body.classList.remove('show');
+            }
+        }
+    </script>
+
 @endsection
 @section('js')
 @endsection

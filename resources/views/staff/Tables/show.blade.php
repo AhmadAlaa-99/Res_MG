@@ -43,22 +43,22 @@
                                 </div>
                                 <div class="external-event btn-info light" data-class="bg-info"><i
                                         class="fa fa-move"></i>Capacity : {{ $tab->capacity ?? '-' }}</div>
-
                             </div>
                             <!-- checkbox -->
                             <div class="checkbox form-check checkbox-event custom-checkbox pt-3 pb-5">
-
                                 <label class="form-check-label" for="drop-remove">
                                     <span class="badge badge-lg light badge-danger"> DATE : {{ $today ?? '-' }}</span>
                                 </label>
                                 <input type="hidden" value="{{ $today ?? '-' }}" name="today">
                             </div>
-
-
                             <a href="javascript:void()" data-bs-toggle="modal" data-bs-target="#add-category"
                                 class="btn btn-primary btn-event w-100">
                                 <span class="align-middle"><i class="ti-date"></i></span> Select a day
-                            </a>
+                            </a>                       
+                            <a style="margin-top:10px;"href="javascript:void()" data-bs-toggle="modal" data-bs-target="#add-reservation"
+                            class="btn btn-danger btn-event w-100">
+                            <span class="align-middle"><i class="ti-date"></i></span> Add reservation
+                        </a>
                         </div>
                     </div>
                 </div>
@@ -79,11 +79,13 @@
                                         class="w-32 flex-none rounded-t lg:rounded-t-none lg:rounded-l text-center shadow-lg ">
                                         <div class="block rounded-t overflow-hidden  text-center ">
                                             @if ($reservation->status == 'next' || $reservation->status == 'scheduled')
-                                                <div id="reservationStatus_{{ $reservation->id }}" style="background-color:#5bcfc5;"class="bg text-white py-1">
+                                                <div id="reservationStatus_{{ $reservation->id }}"
+                                                    style="background-color:#5bcfc5;"class="bg text-white py-1">
                                                 @elseif($reservation->status == 'current')
-                                                    <div  id="reservationStatus_{{ $reservation->id }}"style="background-color:#f52b4f;" class="bg text-white py-1">
+                                                    <div id="reservationStatus_{{ $reservation->id }}"style="background-color:#f52b4f;"
+                                                        class="bg text-white py-1">
                                                     @else
-                                                        <div id="reservationStatus_{{ $reservation->id }}" 
+                                                        <div id="reservationStatus_{{ $reservation->id }}"
                                                             style="background-color: #b38cd2" class="bg text-white py-1">
                                             @endif
                                             {{ $reservation->status ?? '-' }}
@@ -102,7 +104,12 @@
                                                     <a id="startButton_{{ $reservation->id }}"
                                                         onclick="SR({{ $reservation->id }})"
                                                         class="btn btn-primary btn-xxs shadow">Start</a>
-                                                        
+                                                        <a id="startButton_{{ $reservation->id }}"
+                                                            onclick="SR({{ $reservation->id }})"
+                                                            class="btn btn-warning btn-xxs shadow">Edit</a>
+                                                            <a id="startButton_{{ $reservation->id }}"
+                                                                onclick="SR({{ $reservation->id }})"
+                                                                style="margin-top:10px;"class="btn btn-danger btn-xxs shadow">Delete</a>
                                                 @endif
                                                 <a id="endButton_{{ $reservation->id }}"
                                                     onclick="ER({{ $reservation->id }})"
@@ -116,10 +123,11 @@
                                                         End
                                                     </a>
                                                 @endif
-                                            
+
                                             </span>
                                         </div>
-                                        <div class="pb-2 border-l border-r border-b rounded-b-lg text-center border-white bg-white">
+                                        <div
+                                            class="pb-2 border-l border-r border-b rounded-b-lg text-center border-white bg-white">
                                             <span class="text-xs leading-normal">
                                             </span>
                                         </div>
@@ -152,6 +160,36 @@
                                     <input class="form-control form-white" type="date" name="date" required>
                                 </div>
 
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default waves-effect"
+                                    data-bs-dismiss="modal">Close</button>
+                                <button type="submit"class="btn btn-danger">Confirm</button>
+                            </div>
+                        </form>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div class="modal fade none-border" id="add-reservation">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title"><strong>Add a Reservation</strong></h4>
+                    </div>
+                    
+                    <div class="modal-body">
+                        <form method="post" action="{{ route('reservations.store') ?? '-' }}" autocomplete="off"
+                            enctype="multipart/form-data">
+                            @csrf
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <label class="control-label form-label">Time</label>
+                                    <input class="form-control form-white" type="time" name="date" required>
+                                    <input type="hidden" name="table_id" value={{$tab->id}}>
+                                    <input type="hidden" name="reservation_date" value={{$today}}>
+                                </div>
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-default waves-effect"
@@ -217,49 +255,49 @@
                 </div>
             </div>
         </div> --}}
-     
+
     </div>
     </div>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-        <script>
-            function SR(id) {
-                $.ajax({
-                    url: "{{ route('reservations_start_ajax', ':id') }}".replace(':id', id),
-                    method: 'GET',
-                    success: function(response) {
-                        $('#startButton_' + id).hide();
-                        $('#reservationStatus_' + id).text('current');
-                        $('#endButton_' + id).show(); // إظهار زر الانتهاء بعد تحديث الحالة
-                        document.getElementById("endButton_" + reservationId).style.display = "";
-                    
-                      $('#reservationStatus_' + id).css('background-color', '#f72b50');
-                    },
-                    error: function(error) {
-                        alert('An error occurred');
-                        console.log(error);
-                    }
-                });
-            }
-        </script>
-        <script>
-            function ER(id) {
-                $.ajax({
-                    url: "{{ route('reservations_end_ajax', ':id') }}".replace(':id', id),
-                    method: 'GET',
-                    success: function(response) {
-                        $('#endButton_' + id).css('display', 'none');
-                        $('#reservationStatus_' + id).text('finite');
-        
-                      $('#reservationStatus_' + id).css('background-color', '#b08acf');
-                    },
-                    error: function(error) {
-                        alert('An error occurred');
-                        console.log(error);
-                    }
-                });
-            }
-        </script>
-        
+    <script>
+        function SR(id) {
+            $.ajax({
+                url: "{{ route('reservations_start_ajax', ':id') }}".replace(':id', id),
+                method: 'GET',
+                success: function(response) {
+                    $('#startButton_' + id).hide();
+                    $('#reservationStatus_' + id).text('current');
+                    $('#endButton_' + id).show(); // إظهار زر الانتهاء بعد تحديث الحالة
+                    document.getElementById("endButton_" + reservationId).style.display = "";
+
+                    $('#reservationStatus_' + id).css('background-color', '#f72b50');
+                },
+                error: function(error) {
+                    alert('An error occurred');
+                    console.log(error);
+                }
+            });
+        }
+    </script>
+    <script>
+        function ER(id) {
+            $.ajax({
+                url: "{{ route('reservations_end_ajax', ':id') }}".replace(':id', id),
+                method: 'GET',
+                success: function(response) {
+                    $('#endButton_' + id).css('display', 'none');
+                    $('#reservationStatus_' + id).text('finite');
+
+                    $('#reservationStatus_' + id).css('background-color', '#b08acf');
+                },
+                error: function(error) {
+                    alert('An error occurred');
+                    console.log(error);
+                }
+            });
+        }
+    </script>
+
 @endsection
 @section('js')
 

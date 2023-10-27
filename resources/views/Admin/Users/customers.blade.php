@@ -20,19 +20,18 @@
                         <div class="table-responsive">
                             <table class="table table-sm mb-0 table-striped">
                                 <thead>
-
                                     <tr>
                                         <th class=" pe-3">
-                                            <div class="form-check custom-checkbox mx-2">
-                                                <input type="checkbox" class="form-check-input" id="checkAll">
+                                            <div class="form-check custom-checkbox mx-2">        
                                                 <label for="checkAll">ID</label>
                                             </div>
                                         </th>
                                         <th>Name</th>
                                         <th>Email</th>
                                         <th>Phone</th>
-
-                                        {{-- <th></th> --}}
+                                         <th>State</th>
+                                        {{-- <th>
+                                        </th> --}}
                                     </tr>
                                 </thead>
                                 <tbody id="customers">
@@ -46,7 +45,7 @@
                                         <tr class="btn-reveal-trigger">
                                             <td class="py-2">
                                                 <div class="form-check custom-checkbox mx-2">
-                                                    <input type="checkbox" class="form-check-input" id="checkbox12">
+                                          
                                                     <label class="form-check-label"
                                                         for="checkbox12">#{{ $i }}</label>
                                                 </div>
@@ -59,7 +58,7 @@
                                                                 alt="" width="30">
                                                         </div>
                                                         <div class="media-body">
-                                                            <h5 class="mb-0 fs--1">{{ $user->name }}</h5>
+                                                            <h5 class="mb-0 fs--1">{{ $user->firstname }}</h5>
                                                         </div>
                                                     </div>
                                                 </a>
@@ -75,6 +74,8 @@
 											</div>
 										</div>
 									</td> --}}
+                                    <td><span class="badge badge-danger light">{{$user->State}}</span>
+                                                </td>
                                         </tr>
 										@endforeach
 										

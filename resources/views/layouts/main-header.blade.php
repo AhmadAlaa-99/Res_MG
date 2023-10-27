@@ -14,7 +14,6 @@
                            <notification-user></notification-user>
                         </div>
                     </div>
-                     
                     <script src="{{ mix('js/app.js') }}"></script>
                     <link rel="stylesheet" href="{{ mix('css/app.css') }}" />
                     @if (Auth::user()->role_name == 'staff')
@@ -22,9 +21,9 @@
                             <a href="{{ route('reservations_generate_get') }}"
                                 class="btn btn-primary d-sm-inline-block d-none  " alt="Transparent MDB Logo"
                                 id="animated-img1">
-                                Reservations Generate
+                                Reservations Management
                                 <i class="las la-signal ms-3 scale5"></i></a>
-                        </li>
+                        </li>    
                     @else
                         <li class="nav-item">
                             <a href="{{ route('resturants.create') }}"
@@ -34,7 +33,6 @@
                                 <i class="las la-plus ms-3 scale5"></i></a>
                         </li>
                     @endif
-
                 </ul>
             </div>
         </nav>
@@ -53,6 +51,7 @@
             <div class="modal-header">
                 <h4 class="modal-title"><strong>Reservations Generate</strong></h4>
             </div>
+            
             <div class="modal-body">
                 <form method="post" action="{{ route('reservations_generate') }}" autocomplete="off"
                     enctype="multipart/form-data">
