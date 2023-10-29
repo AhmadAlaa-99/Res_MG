@@ -80,24 +80,26 @@
                                                 <div class="info me-3 mb-3">
                                                     <span class="font-w500">Sat.F.{{ $time->sat_from }}</span>
                                                     <span class="font-w500">Sat.T.{{ $time->sat_to }}</span>
-                                                    <button class="btn btn-danger btn-xxs shadow edit-btn"
+                                                    @can('edit_record')<button class="btn btn-danger btn-xxs shadow edit-btn"
                                                         data-bs-toggle="modal" data-id="{{ $time->id }}"
                                                         data-datestart="{{ $time->date_start }}"
                                                         data-dateend="{{ $time->date_end }}"
                                                         data-from="{{ $time->sat_from }}"
                                                         data-to="{{ $time->sat_to }}">Edit</button>
+                                                        @endcan
 
                                                 </div>
 
                                                 <div class="info me-3 mb-3">
                                                     <span class="font-w500">Sun.F.{{ $time->sun_from }}</span>
                                                     <span class="font-w500">Sun.T.{{ $time->sun_to }}</span>
-                                                    <button class="btn btn-danger btn-xxs shadow edit-btn"
+                                                    @can('edit_record')<button class="btn btn-danger btn-xxs shadow edit-btn"
                                                         data-bs-toggle="modal" data-id="{{ $time->id }}"
                                                         data-datestart="{{ $time->date_start }}"
                                                         data-dateend="{{ $time->date_end }}"
                                                         data-from="{{ $time->sun_from }}"
                                                         data-to="{{ $time->sun_to }}">Edit</button>
+                                                        @endcan
 
                                                 </div>
 
@@ -108,23 +110,25 @@
                                                 <div class="info me-3 mb-3">
                                                     <span class="font-w500">Mon.F.{{ $time->mon_from }}</span>
                                                     <span class="font-w500">Mon.T.{{ $time->mon_to }}</span>
-                                                    <button class="btn btn-danger btn-xxs shadow edit-btn"
+                                                    @can('edit_record')<button class="btn btn-danger btn-xxs shadow edit-btn"
                                                         data-bs-toggle="modal" data-id="{{ $time->id }}"
                                                         data-datestart="{{ $time->date_start }}"
                                                         data-dateend="{{ $time->date_end }}"
                                                         data-from="{{ $time->mon_from }}"
                                                         data-to="{{ $time->mon_to }}">Edit</button>
+                                                        @endcan
                                                 </div>
 
                                                 <div class="info me-3 mb-3">
                                                     <span class="font-w500">Tue.F.{{ $time->tue_from }}</span>
                                                     <span class="font-w500">Tue.T.{{ $time->tue_to }}</span>
-                                                    <button class="btn btn-danger btn-xxs shadow edit-btn"
+                                                    @can('edit_record')<button class="btn btn-danger btn-xxs shadow edit-btn"
                                                         data-bs-toggle="modal" data-id="{{ $time->id }}"
                                                         data-datestart="{{ $time->date_start }}"
                                                         data-dateend="{{ $time->date_end }}"
                                                         data-from="{{ $time->tue_from }}"
                                                         data-to="{{ $time->tue_to }}">Edit</button>
+                                                        @endcan
 
                                                 </div>
 
@@ -134,32 +138,35 @@
                                                 <div class="info me-3 mb-3">
                                                     <span class="font-w500">Wed.F.{{ $time->wed_from }}</span>
                                                     <span class="font-w500">Wed.T.{{ $time->wed_to }}</span>
-                                                    <button class="btn btn-danger btn-xxs shadow edit-btn"
+                                                    @can('edit_record')<button class="btn btn-danger btn-xxs shadow edit-btn"
                                                         data-bs-toggle="modal" data-id="{{ $time->id }}"
                                                         data-datestart="{{ $time->date_start }}"
                                                         data-dateend="{{ $time->date_end }}"
                                                         data-from="{{ $time->wed_from }}"
                                                         data-to="{{ $time->wed_to }}">Edit</button>
+                                                        @endcan
                                                 </div>
                                                 <div class="info me-3 mb-3">
                                                     <span class="font-w500">Thu.F.{{ $time->thu_from }}</span>
                                                     <span class="font-w500">Thu.T.{{ $time->thu_to }}</span>
-                                                    <button class="btn btn-danger btn-xxs shadow edit-btn"
+                                                    @can('edit_record')<button class="btn btn-danger btn-xxs shadow edit-btn"
                                                         data-bs-toggle="modal" data-id="{{ $time->id }}"
                                                         data-datestart="{{ $time->date_start }}"
                                                         data-dateend="{{ $time->date_end }}"
                                                         data-from="{{ $time->thu_from }}"
                                                         data-to="{{ $time->thu_to }}">Edit</button>
+                                                        @endcan
                                                 </div>
                                                 <div class="info me-3 mb-3">
                                                     <span class="font-w500">Fri.F.{{ $time->fri_from }}</span>
                                                     <span class="font-w500">Fri.T.{{ $time->fri_to }}</span>
-                                                    <button class="btn btn-danger btn-xxs shadow edit-btn"
+                                                    @can('edit_record')<button class="btn btn-danger btn-xxs shadow edit-btn"
                                                         data-bs-toggle="modal" data-id="{{ $time->id }}"
                                                         data-datestart="{{ $time->date_start }}"
                                                         data-dateend="{{ $time->date_end }}"
                                                         data-from="{{ $time->fri_from }}"
                                                         data-to="{{ $time->fri_to }}">Edit</button>
+                                                        @endcan
                                                 </div>
 
                                             </div>

@@ -28,13 +28,15 @@
                                                 <span class="align-middle"></span>Select a day 
                                             </a>
                                         </li> 
+                                        @can('Reservations_Generate')
                                         <li class="nav-item">
                                             <a href="{{route('reservations_generate_get',$id)}}"
                                                 class="btn btn-primary d-sm-inline-block d-none  " alt="Transparent MDB Logo"
                                                 id="animated-img1">
                                                 Reservations Management
                                                 <i class="las la-signal ms-3 scale5"></i></a>
-                                        </li>    
+                                        </li>   
+                                        @endcan 
                                     </ul>
                                 </div>
                             </div>
@@ -106,6 +108,49 @@
                                                             <a href="{{route('reservations_end',$reservation->id)}}" class="btn btn-danger btn-xxs shadow">End</a>
                                                             </div>
                                                             @endif --}}
+                                                            @if ($reservation->status == 'next' || $reservation->status == 'scheduled')
+                                                            @can('start_end_reservation')
+                                                            <div class="me-1 mb-1">
+                                                                <button id="startButton_{{ $reservation->id }}"
+                                                                    onclick="startReservation({{ $reservation->id }})"
+                                                                    class="btn btn-primary btn-xxs shadow">Start</button>
+                                                            </div>
+                                                            @endcan
+                                                            @can('edit_delete_reservation')
+
+                                                            <div class="me-1 mb-1">
+
+                                                                <button id="startButton_{{ $reservation->id }}"
+                                                                    onclick="startReservation({{ $reservation->id }})"
+                                                                    class="btn btn-warning btn-xxs shadow">Edit</button>
+                                                            </div>
+
+                                                            <div class="me-1 mb-1">
+
+                                                                <button id="startButton_{{ $reservation->id }}"
+                                                                    onclick="startReservation({{ $reservation->id }})"
+                                                                    class="btn btn-danger btn-xxs shadow">Delete</button>
+                                                            </div>
+                                                            @endcan
+                                                        @endif
+
+                                                        @if ($reservation->status == 'current')
+                                                        @can('start_end_reservation')
+                                                            <div class="me-3 mb-3">
+                                                                <button id="endButton_{{ $reservation->id }}"
+                                                                    onclick="endReservation({{ $reservation->id }})"
+                                                                    class="btn btn-danger btn-xxs shadow">End</button>
+                                                            </div>
+                                                            @endcan
+                                                        @endif
+                                                        @can('start_end_reservation')
+                                                        <div class="me-3 mb-3">
+                                                            <button id="endButton_{{ $reservation->id }}"
+                                                                onclick="endReservation({{ $reservation->id }})"
+                                                                class="btn btn-danger btn-xxs shadow"
+                                                                style="display:none">End</button>
+                                                        </div>
+                                                        @endif
                                                             <div class="me-3 mb-3">
                                                                 <a href="{{ route('reservations.show', $reservation->id) }}"
                                                                     class="btn btn-warning btn-xxs shadow">Details</a>

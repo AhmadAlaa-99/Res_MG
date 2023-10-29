@@ -32,8 +32,10 @@ class HomeController extends Controller
      */
     public function index()
     {
-        if(Auth::user()->role_name=="staff")
+        return 'fds';
+        if(Auth::user()->role_name="staff")
         {
+            return 'fds';
             return redirect()->route('staff_statistics');
 
         }

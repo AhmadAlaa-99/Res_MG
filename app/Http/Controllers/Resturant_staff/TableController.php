@@ -49,13 +49,14 @@ class TableController extends Controller
         
         return view('staff.Tables.show', compact('table','today','tab'));
     }
-    public function index()
+    public function index(Request $request)
     {
-        $user_id=Auth::user()->id;
-        $res=Resturant::where('user_id',$user_id)->first();
+        return $request->all();
+        $res=Resturant::where('id',$request->res_id)->first();
+        $res_id=$res->id;
         
         $tables=Table::where('resturant_id',$res->id)->get();
-        return view('staff.Tables.index', compact('tables'));
+        return view('staff.Tables.index',['tables' => $tables,'res_id' => $res_id]);
     }
 
     public function show($id)
@@ -64,29 +65,30 @@ class TableController extends Controller
         $table=Table::where('id',$id)->with('reservations')->first();
         return view('staff.Tables.show', compact('table','today'));
     }
-    public function create()
+    public function create(Request $request)
     {
-        return view('staff.Tables.create');
+        $res_id=$request->res_id;
+        return view('staff.Tables.create',compact('res_id'));
     }
     public function store(TableRequest $request)
     {
-        $user=Auth::user()->id;
-        $res=Resturant::where('user_id',$user)->first();
+
+        //$user=Auth::user()->id;
+     //   $res=Resturant::where('user_id',$user)->first();
      try {
       Table::create([
         'number'=>$request->number,
-        'resturant_id'=>$res->id,
+        'resturant_id'=>$request->res_id,
         'seating_configuration'=>$request->seating_configuration,
         'capacity'=>$request->capacity,
       ]);
      // toastr()->success(trans('messages.success'));
       switch ($request->input('action')) {
         case 'more_add':
-            return redirect()->route('tables.create');
+            return redirect()->route('tables.create',['res_id' => $res_id]);
             break;
-
         case 'add_and_cancel':
-            return redirect()->route('tables.index');
+            return redirect()->route('rest_tables');
             break;
         }
     }

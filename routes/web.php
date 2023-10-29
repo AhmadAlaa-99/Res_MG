@@ -4,7 +4,8 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\RoleController;
-use App\Http\Controllers\Admin\CuisineController;
+use App\Http\Controllers\Admin\OfferController;
+use App\Http\Controllers\Admin\CuisineController; 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Resturant_staff\DashboardController as staff_DashboardController ;
 use App\Http\Controllers\Resturant_staff\ReservationController as staff_ReservationController ;
@@ -46,6 +47,7 @@ Route::group([
 
     Route::resource('users', UserController::class);
     Route::resource('roles', RoleController::class);
+    Route::resource('offers', OfferController::class);
 
     Route::get('/managers', [UserController::class, 'managers'])->name('managers');
     Route::get('/', [DashboardController::class, 'statistics'])->name('statistics');

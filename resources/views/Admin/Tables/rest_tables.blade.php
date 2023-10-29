@@ -45,10 +45,12 @@
                                                 stroke-linejoin="round"></path>
                                         </svg>
                                     </a>
+                                    @can('Crud Tables')
                                     <div class="dropdown-menu dropdown-menu-right">
                                         <a class="dropdown-item" href="javascript:void(0);">Delete</a>
                                         <a class="dropdown-item" href="javascript:void(0);">Edit</a>
                                     </div>
+                                    @endcan
                                 </div>
                             </div>
                             <div class="card-body">
@@ -66,9 +68,11 @@
                     <div class="col-lg-12">
                         <div class="card">
                             <div class="card-header">
+                                @can('Crud Tables')
                                 <h4 class="card-title">
                                     <a href="{{ route('table_add', $res_id) }}" class="btn btn-primary mb-1">Table Add</a>
                                 </h4>
+                                @endcan
                             </div>
                             <div class="card-body">
                                 <div class="table-responsive">

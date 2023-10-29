@@ -41,7 +41,6 @@
                     </a>
                 </div>
             </li>
-            {{-- @if (Auth::user()->role_name == 'admin') --}}
             @can('statistics(admin)')
                 <li>
                     <a href="{{ route('statistics') }}" class="ai-icon" aria-expanded="false">
@@ -50,29 +49,29 @@
                     </a>
                 </li>
             @endcan
-            @can('statistics(staff)')
+            {{-- @can('statistics(staff)') --}}
                 <li>
                     <a href="{{ route('staff_statistics') }}" class="ai-icon" aria-expanded="false">
                         <i class="flaticon-025-dashboard"></i>
                         <span class="nav-text">Statistics</span>
                     </a>
                 </li>
-            @endcan
-
+            {{-- @endcan --}}
             <li>
-                <a class="has-arrow ai-icon" href="javascript:void()" aria-expanded="false">
-                    <i class="flaticon-381-archive"></i>
-                    <span class="nav-text">Resturants</span>
-                </a>
-                <ul aria-expanded="false">
-                    @can('Browse Resturants')
+                @can('Browse Resturants')
+                    <a class="has-arrow ai-icon" href="javascript:void()" aria-expanded="false">
+                        <i class="flaticon-381-archive"></i>
+                        <span class="nav-text">Resturants</span>
+                    </a>
+                    <ul aria-expanded="false">
                         <li><a href="{{ route('resturants.index') }}">Resturants Browse</a></li>
-                    @endcan
-                    @can('Crud Resturants')
-                        <li><a href="{{ route('resturants.create') }}">Resturant Add</a></li>
-                    @endcan
-                </ul>
+                        @can('Crud Resturants')
+                            <li><a href="{{ route('resturants.create') }}">Resturant Add</a></li>
+                        @endcan
+                    </ul>
+                @endcan
             </li>
+            
             @can('Users Management')
                 <li>
                     <a class="has-arrow ai-icon" href="javascript:void()" aria-expanded="false">
@@ -104,23 +103,23 @@
             </li>
             {{-- @endif --}}
             {{-- @if (Auth::user()->role_name == 'staff') --}}
-            @can('Browse Reservation')
+            {{-- @can('Browse Reservation')
                 <li>
                     <a href="{{ route('today_reservations') }}" class="ai-icon" aria-expanded="false">
                         <i class="flaticon-381-archive"></i>
                         <span class="nav-text">Reservations</span>
                     </a>
                 </li>
-            @endcan
-            @can('browse Reservation_Records')
+            @endcan --}}
+            {{-- @can('browse Reservation_Records')
                 <li>
                     <a href="{{ route('records_reservations') }}" class="ai-icon" aria-expanded="false">
                         <i class="flaticon-381-archive"></i>
                         <span class="nav-text">Reservations Records</span>
                     </a>
                 </li>
-            @endcan
-            @can('Browse Tables(staff)')
+            @endcan --}}
+            {{-- @can('Browse Tables(staff)')
                 <li>
                     <a class="has-arrow ai-icon" href="javascript:void()" aria-expanded="false">
                         <i class="flaticon-381-id-card"></i>
@@ -131,14 +130,11 @@
                             <li><a href="{{ route('tables.create') }}">Table Add</a></li>
                             <li><a href="{{ route('tables.index') }}">Tables Browse</a></li>
                         @endcan --}}
-                        <li><a href="{{ route('tables.index') }}">Tables Browse</a></li>
+                        {{-- <li><a href="{{ route('tables.index') }}">Tables Browse</a></li>
                     </ul>
                 <li>
-            @endcan
-                <a href="{{ route('all_notifications') }}" class="ai-icon" aria-expanded="false">
-                    <i class="flaticon-381-notification"></i>
-                    <span class="nav-text">Notifications</span>
-                </a>
+                @endcan --}}
+
             </li>
             </li>
             {{-- <li>

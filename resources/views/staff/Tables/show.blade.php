@@ -54,11 +54,13 @@
                             <a href="javascript:void()" data-bs-toggle="modal" data-bs-target="#add-category"
                                 class="btn btn-primary btn-event w-100">
                                 <span class="align-middle"><i class="ti-date"></i></span> Select a day
-                            </a>                       
-                            <a style="margin-top:10px;"href="javascript:void()" data-bs-toggle="modal" data-bs-target="#add-reservation"
-                            class="btn btn-danger btn-event w-100">
-                            <span class="align-middle"><i class="ti-date"></i></span> Add reservation
-                        </a>
+                            </a>
+                            @can('Add Reservation')
+                                <a style="margin-top:10px;"href="javascript:void()" data-bs-toggle="modal"
+                                    data-bs-target="#add-reservation" class="btn btn-danger btn-event w-100">
+                                    <span class="align-middle"><i class="ti-date"></i></span> Add reservation
+                                </a>
+                            @endcan
                         </div>
                     </div>
                 </div>
@@ -100,29 +102,37 @@
                                         <div
                                             class="border-l border-r border-b rounded-b-lg text-center border-white bg-white -pt-2 -mb-1">
                                             <span class="text-sm">
+
                                                 @if ($reservation->status == 'next' || $reservation->status == 'scheduled')
-                                                    <a id="startButton_{{ $reservation->id }}"
-                                                        onclick="SR({{ $reservation->id }})"
-                                                        class="btn btn-primary btn-xxs shadow">Start</a>
+                                                    @can('start_end_reservation')
+                                                        <a id="startButton_{{ $reservation->id }}"
+                                                            onclick="SR({{ $reservation->id }})"
+                                                            class="btn btn-primary btn-xxs shadow">Start</a>
+                                                    @endcan
+                                                    @can('edit_delete_reservation')
                                                         <a id="startButton_{{ $reservation->id }}"
                                                             onclick="SR({{ $reservation->id }})"
                                                             class="btn btn-warning btn-xxs shadow">Edit</a>
-                                                            <a id="startButton_{{ $reservation->id }}"
-                                                                onclick="SR({{ $reservation->id }})"
-                                                                style="margin-top:10px;"class="btn btn-danger btn-xxs shadow">Delete</a>
+                                                        <a id="startButton_{{ $reservation->id }}"
+                                                            onclick="SR({{ $reservation->id }})"
+                                                            style="margin-top:10px;"class="btn btn-danger btn-xxs shadow">Delete</a>
+                                                    @endcan
                                                 @endif
-                                                <a id="endButton_{{ $reservation->id }}"
-                                                    onclick="ER({{ $reservation->id }})"
-                                                    class="btn btn-danger btn-xxs shadow" style="display:none">
-                                                    End
-                                                </a>
-                                                @if ($reservation->status == 'current')
+                                                @can('start_end_reservation')
                                                     <a id="endButton_{{ $reservation->id }}"
                                                         onclick="ER({{ $reservation->id }})"
-                                                        class="btn btn-danger btn-xxs shadow">
+                                                        class="btn btn-danger btn-xxs shadow" style="display:none">
                                                         End
                                                     </a>
-                                                @endif
+
+                                                    @if ($reservation->status == 'current')
+                                                        <a id="endButton_{{ $reservation->id }}"
+                                                            onclick="ER({{ $reservation->id }})"
+                                                            class="btn btn-danger btn-xxs shadow">
+                                                            End
+                                                        </a>
+                                                    @endif
+                                                @endcan
 
                                             </span>
                                         </div>
@@ -178,7 +188,7 @@
                     <div class="modal-header">
                         <h4 class="modal-title"><strong>Add a Reservation</strong></h4>
                     </div>
-                    
+
                     <div class="modal-body">
                         <form method="post" action="{{ route('reservations.store') ?? '-' }}" autocomplete="off"
                             enctype="multipart/form-data">
@@ -187,8 +197,8 @@
                                 <div class="col-md-12">
                                     <label class="control-label form-label">Time</label>
                                     <input class="form-control form-white" type="time" name="date" required>
-                                    <input type="hidden" name="table_id" value={{$tab->id}}>
-                                    <input type="hidden" name="reservation_date" value={{$today}}>
+                                    <input type="hidden" name="table_id" value={{ $tab->id }}>
+                                    <input type="hidden" name="reservation_date" value={{ $today }}>
                                 </div>
                             </div>
                             <div class="modal-footer">

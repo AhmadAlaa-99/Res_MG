@@ -39,8 +39,8 @@ class PermissionSeeder extends Seeder
             $permissions=Permission::whereIn('id',$AdminPermissions)->get();
             $role = Role::create(['name' => 'admin']);
             $role->syncPermissions($permissions);
-            $StaffPermissions=['1','6','8','9','11','16'];
-            $permissions=Permission::whereIn('id',$AdminPermissions)->get();
+            $StaffPermissions=['1','8','9','11','16'];
+            $permissions=Permission::whereIn('id',$StaffPermissions)->get();
             $role = Role::create(['name' => 'staff']);
             $role->syncPermissions($permissions);
 

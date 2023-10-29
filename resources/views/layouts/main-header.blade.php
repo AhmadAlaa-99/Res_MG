@@ -16,15 +16,16 @@
                     </div>
                     <script src="{{ mix('js/app.js') }}"></script>
                     <link rel="stylesheet" href="{{ mix('css/app.css') }}" />
-                    @if (Auth::user()->role_name == 'staff')
+                    {{-- @if (Auth::user()->role_name == 'staff')
                         <li class="nav-item">
-                            <a href="{{ route('reservations_generate_get') }}"
-                                class="btn btn-primary d-sm-inline-block d-none  " alt="Transparent MDB Logo"
+                            <a href="{{ route('reservations_generate_get',Resturant::where('user_id',Auth::user()->id)) }}"
+                                class="btn btn-primary d-sm-inline-block d-none" alt="Transparent MDB Logo"
                                 id="animated-img1">
                                 Reservations Management
                                 <i class="las la-signal ms-3 scale5"></i></a>
                         </li>    
-                    @else
+                        @endif --}}
+                        @can('Crud Resturants')
                         <li class="nav-item">
                             <a href="{{ route('resturants.create') }}"
                                 class="btn btn-primary d-sm-inline-block d-none  " alt="Transparent MDB Logo"
@@ -32,7 +33,8 @@
                                 Resturant Add
                                 <i class="las la-plus ms-3 scale5"></i></a>
                         </li>
-                    @endif
+                        @endcan
+                   
                 </ul>
             </div>
         </nav>

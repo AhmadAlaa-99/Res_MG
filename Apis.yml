@@ -13,19 +13,6 @@ or can select person just and from back process any table
 - problem times 
 - good booking in discover
 - num_person - date - time.
-
-
-
-
-
-
-
-
-
-
-
-
-
 ------------------------
 as laravel api i need functions :
 ------------------------------------------------------
@@ -94,3 +81,100 @@ PROBLEMS :
 -----------------------------------------------------------------------------------------
 dashboard problems :
 ----------------------------------------------------------------------
+
+APIS HOME :
+------------
+ForYou(location - age. (ages accept from dashboard resturant))
+Featured(rating - reservations)
+Based on Your taste(algorithm  selected - dynamic)
+[nameCate - Desc - rest(image - name - cuisine - rating(number) - location) with distanse about location cureent].
+New Opening - Offers : [images just].
+--------------------------------
+DETAILS1 OFFER:  
+IMAGE - PRICE_OLD - PRICE_NEW - DESC - NAME_OFFER - FEATURES - IMAGES
+-------------------------
+Details Resturant :
+Name - location - Services(icon with name)
+Num rating - rating -menu 
+suggestion resturants similiar 
+--------------------------------
+
+
+
+
+
+Details bOOK Res :
+image - images - description - services(icon with names) -location on map - 
+location - phone - website - insta - deposite_information - refund Policy 
+change Policy - CANCELLED POLICY
+--------------------------------
+Book :
+date - numPersone - time
+----.register complete :
+show details book : date - num person - st_time - end_time - location
+--.
+firstname - last - phone - cooments - PAYMENT_METHOD - CODE PROMO
+gROUP BROOKING AND TPTAL 
+-----------------------------------
+REVIEW ON BOOKING : same res
+---------------------------
+PAGE FOLLOWING :
+NUM 
+LIST RES : LOGO - NAME - DSESC - RATING 
+Recommend based on you followed : 
+----------------------------------------------------
+follow / unfollow :
+----------------------------------------
+
+
+
+
+
+
+
+
+filtersearch res :
+sort by : revelance - distance 
+follow only 
+cuisine type(multiple)
+type_res
+-------------------
+
+
+----------------------------
+page discover nearby :
+name_cat : (rating - name - ? - available - distance)
+--------------------------
+page view_all_cat :
+-----------------------------
+filter_search_booking : people - date - time
+---------------------------------
+
+
+
+
+
+
+
+
+page_map :
+list res_nearby :
+image - name- type - availble - distanse - 
+----------------------------------------------------
+
+
+
+
+
+Page Bookings :
+History :
+Upcoming :
+(num_person - date - st_end - location - status(confirmed - rejected - pending - completed - cancelled - ))
+---------------
+revoke :
+details : (details _res)
+-------------------------------------
+Notification : 
+----------------------------------------
+Log OUT 
+----------------------------------------------------

@@ -65,6 +65,8 @@
                                             <div class="col-lg-6">
                                                 <input type="text" class="form-control" id="validationCustom08"
                                                     placeholder="capacity" name="capacity" required="">
+                                                
+                                                    <input type="hidden" value="{{$res_id}}" name="res_id">
                                                 <div class="invalid-feedback">
                                                     @error('capacity')
                                                         <div class="alert alert-danger">{{ $message }}</div>

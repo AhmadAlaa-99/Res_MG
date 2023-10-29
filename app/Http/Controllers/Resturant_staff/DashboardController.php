@@ -11,15 +11,18 @@ use Auth;
 use App\Models\Menu;
 use App\Models\Reservation;
 use App\Models\Reviews;
+use App\Models\Resturant;
 class DashboardController extends Controller
 {
     public function staff_statistics()
     {
+        $user_id=Auth::id();
+        $resturant=Resturant::where('user_id',$user_id)->first();
         $tables='2';
         $total_price='2';
         $reserv='32';
         $customers='423';
-        return view('staff.statistics',compact('tables','total_price','reserv','customers'));
+        return view('staff.statistics',compact('tables','total_price','reserv','customers','resturant'));
     }
     public function staff_profile()
 {

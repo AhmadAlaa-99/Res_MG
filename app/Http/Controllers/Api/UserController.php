@@ -19,6 +19,11 @@ class UserController extends BaseController
 
    public function proposal_resturants(Request $request)
    {
+//       ForYou(location - age. (ages accept from dashboard resturant))
+// Featured(rating - reservations)
+// Based on Your taste(algorithm  selected - dynamic)
+// [nameCate - Desc - rest(image - name - cuisine - rating(number) - location) with distanse about location cureent].
+// New Opening - Offers : [images just].
       //all resturants(id name location rating open.close deposit images) orderby cuisine(id name desc).
    $resturants=Cuisine::with(['resturants' => function ($query) {
    $query->select('id','name','time_start','time_end','deposit','rating')->with('location','images');}])->get();
@@ -26,6 +31,19 @@ class UserController extends BaseController
    }
    public function details($id) //with viewMap
    {
+      // -------------------------
+      // Details Resturant :
+      // Name - location - Services(icon with name)
+      // Num rating - rating -menu 
+      // suggestion resturants similiar 
+      // --------------------------------
+      // Details bOOK Res :
+      // image - images - description - services(icon with names) -location on map - 
+      // location - phone - website - insta - deposite_information - refund Policy 
+      // change Policy - CANCELLED POLICY
+      // --------------------------------
+
+
       //images - Name - State - City - Description -  RATING(NUM)-  Reviews (stars mumb - num reviews)
       $resturant=Resturant::where('id',$id)->with('images','reviews','location') //,'reservations','location'
       ->withCount('reviews as count_reviews')->first();
@@ -53,6 +71,10 @@ class UserController extends BaseController
 
    public function reversation(Request $request,$id) //id reservation
    {
+//       date - num person - st_time - end_time - location
+// --.
+// firstname - last - phone - cooments - PAYMENT_METHOD - CODE PROMO
+// gROUP BROOKING AND TPTAL 
       $reservation=Reservation::where('id',$id)->first();
       $reservation->update([
          'customer_id'=>Auth::guard('customer-api')->id(),
@@ -89,6 +111,9 @@ class UserController extends BaseController
  }
  public function list_rec_follow(Request $request)
  {
+//    NUM 
+// LIST RES : LOGO - NAME - DSESC - RATING 
+// Recommend based on you followed : 
    $customer = Customer::find(Auth::guard('customer-api')->id());
    $followedRestaurantIds = $customer->followed_restaurants; 
    $followings = Restaurant::whereIn('id', $followedRestaurantIds)
@@ -100,6 +125,11 @@ class UserController extends BaseController
  }
  public function my_reservations()
  {
+   
+// Page Bookings :
+// History :
+// Upcoming :
+// (num_person - date - st_end - location - status(confirmed - rejected - pending - completed - cancelled - ))
    // Upcoming - History  (num person - date with time) 
    // - map(state - city) - image  - status(completed - paid - cancelled)
       $my_reservations=Reservation::where('customer_id',Auth::guard('customer-api')->id())
@@ -125,6 +155,10 @@ class UserController extends BaseController
  }
  public function map_res(Request $request)
  {
+   //       == page_map :
+// list res_nearby :
+// image - name- type - availble - distanse - 
+
    // return list nearest : images large small - name - location - x,y - distanse between location and res
 $userLatitude =$request->user_latitude;
 $userLongitude =$request->user_longitude;
@@ -147,6 +181,7 @@ $restaurants = Restaurant::with('images', 'cuisine')
  }
    public function search(Request $request)//name 
     {
+      //nameor cuisine or location or type
       $resturant=Resturant::where('name',$request->name)->with('images','reviews','location')
       ->withCount('reviews as count_reviews')->first();
       return $this->sendResponse($resturant,'search');
@@ -165,6 +200,10 @@ $restaurants = Restaurant::with('images', 'cuisine')
    public function filtersearch(Request $request) //request : sort_type(rating - Distance )
    //Sort by rating Distance show following just price range Cuisine  Type
     {
+//       sort by : revelance - distance 
+// follow only 
+// cuisine type(multiple)
+// type_res
       $userLatitude = 'user_latitude_here';
       $userLongitude = 'user_longitude_here';
       $userState = 'user_state_here';
@@ -213,4 +252,22 @@ $restaurants = Restaurant::with('images', 'cuisine')
       $reviews=Resturant::where('id',$id)->with('reviews')->withCount('reviews as count_reviews')->first();
       return $reviews;
    }
+   public function details_offer($id)
+   {
+      // IMAGE - PRICE_OLD - PRICE_NEW - DESC - NAME_OFFER - FEATURES - IMAGES
+   }
+   public function available_times($id)  //id res
+   {
+      // request : date - numPersone - return : time
+   }
+   public function nearest_resturants()
+   {
+     // name_cat : (rating - name - ? - available - distance)
+
+   }
+   public function category_resturants($id)
+   {
+     // page view_all_cat :
+   }
+
 }

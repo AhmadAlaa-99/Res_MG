@@ -92,8 +92,10 @@
                                 </div>
                                 <div class="dropdown ms-auto">
                                     <div class="mt-4">
+                                        @can('Crud Resturants')
                                         <a href="{{ route('resturants.edit', $Resturant->id) }}"
                                             class="btn btn-primary mb-1 me-1">Edit</a>
+                                            @endcan
                                         <a href="{{ route('resturant_reservations', $Resturant->id) }}"
                                             class="btn btn-primary mb-1">Reservations Details</a>
                                     </div>

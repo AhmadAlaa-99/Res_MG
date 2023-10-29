@@ -239,10 +239,11 @@ class DashboardController extends Controller
 
     public function rest_tables($id)  //id resturant
     {
-     
+       
         $res=Resturant::where('id',$id)->first();
+        $res_id=$res->id;
         $tables=Table::where('resturant_id',$res->id)->get();
-        return view('staff.Tables.index', compact('tables'));
+        return view('staff.Tables.index', compact('tables','res_id'));
     }
 
     public function table_details($id)   //id table
@@ -274,8 +275,6 @@ public function table_add(Request $request,$id)
 
 public function table_store(Request $request,$id)
 {
-
-   
     Table::create([
           'number'=>$request->number,
           'resturant_id'=>$id,
@@ -291,8 +290,6 @@ public function table_store(Request $request,$id)
             return redirect()->route('rest_tables',$id);
             break;
         }
-
-   
 }
 public function resturant_reservations($id)
 {

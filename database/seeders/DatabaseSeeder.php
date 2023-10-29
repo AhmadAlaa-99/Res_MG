@@ -31,7 +31,7 @@ class DatabaseSeeder extends Seeder
 
         $faker=Factory::create();
         // \App\Models\User::factory(10)->create();
-  //Admin
+        //Admin
         \App\Models\User::create([
             'name' => 'HDR ADMIN',
             'email' => 'HDR@gmail.com',
@@ -43,8 +43,8 @@ class DatabaseSeeder extends Seeder
         $user=User::latest()->first();
         $role = Role::where('name','admin')->first();
         $user->assignRole([$role->id]);
-         //cuisine 
-         $cuisine_types=['عربي','غربي','فرنسي','الماني'];
+        //cuisine 
+        $cuisine_types=['عربي','غربي','فرنسي','الماني'];
          for($i=0; $i<4 ;$i++)
          {
               Cuisine::create([
@@ -131,7 +131,8 @@ class DatabaseSeeder extends Seeder
             'password' => bcrypt('Hdr@2132'),           
             'phone'=>'09'.random_int(11111111,99999999),
       
-        ]);      }
+        ]);  
+      }
         //tables
         $config_seat=['فردي','زوجي','رباعي'];
         for($i=0; $i<10 ;$i++)
