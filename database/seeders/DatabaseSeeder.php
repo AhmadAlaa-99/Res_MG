@@ -6,6 +6,8 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use Carbon\Carbon;
 use Hash;
+use DB;
+use App\Models\images_offer;
 use Faker\Factory;
 use App\Models\Table;
 use App\Models\User;
@@ -15,6 +17,7 @@ use App\Models\Menu;
 use App\Models\Image;
 use App\Models\Reservation;
 use App\Models\Reviews;
+use App\Models\offer;
 use App\Models\Resturant;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
@@ -80,9 +83,10 @@ class DatabaseSeeder extends Seeder
         //Resturant
         $k=1;
         $start=['Damascus','Homs','Lattakia','Aleppo','Tartus','As-suwayda'];
-        
+        $m=1;
         for($i=2; $i<12 ;$i++)
         {
+         
             \App\Models\Resturant::create([
               'user_id' =>$i,
               'cuisine_id' => random_int(1,4),
@@ -93,6 +97,20 @@ class DatabaseSeeder extends Seeder
             'Activation_start'=>'2023-09-10',
             'Activation_end'=>'2023-09-27',
               'phone_number'=>'9639'.random_int(10000000,99999999),
+              'age_range'=>serialize(['start_age' =>18,'end_age' => 30]),
+            ]);
+            $resturant=Resturant::latest()->first();
+            \App\Models\Image::create([
+              'filename'=>'attachments\resturants\images\test_image.jpg',
+              'imageable_id'=>$k,
+              'type' => 'main',
+              'imageable_type'=>'App\Models\Resturant',
+            ]);
+            \App\Models\Image::create([
+              'filename'=>'attachments\resturants\images\test_logo.jpg',
+              'imageable_id'=>$k,
+              'type' => 'logo',
+              'imageable_type'=>'App\Models\Resturant',
             ]);
             $randomStartIndex = array_rand($start); 
             $randomStart = $start[$randomStartIndex]; 
@@ -130,19 +148,58 @@ class DatabaseSeeder extends Seeder
             'email' => $faker->email,
             'password' => bcrypt('Hdr@2132'),           
             'phone'=>'09'.random_int(11111111,99999999),
+            'birth_date'=>'1999/10/10',
       
         ]);  
       }
         //tables
         $config_seat=['فردي','زوجي','رباعي'];
+        $type=['offer','new_opening'];
+        
+
         for($i=0; $i<10 ;$i++)
         {
               \App\Models\Table::create([
              'number' =>random_int(100,999),
              'resturant_id' =>'2',
-             'seating_configuration' => array_rand($config_seat),
+             'seating_configuration' =>$config_seat[array_rand($config_seat)],
              'capacity'=>'4',]);  
             }
+            $h=1;
+            for($i=0; $i<5 ;$i++)
+            {
+              
+            offer::create([
+              'price_old'=>'20000',
+              'price_new'=>'19999',
+              'desc'=>'test offer',
+              'name'=>'name offer',
+              'type'=>$type[array_rand($type)],
+              'featured'=>['wifi','water'],
+              'resturant_id'=>'1'
+              ]);
+              $offer=offer::latest()->first();
+               images_offer::create([
+                'filename'=>'attachments\resturants\images\test_image.jpg',
+                'imageable_id'=>$h,
+                'type'=>'cover',
+                'imageable_type'=>'App\Models\offer',
+              ]);
+              images_offer::create([
+                'filename'=>'attachments\resturants\images\test_image.jpg',
+                'imageable_id'=>$h,
+                'type'=>'main',
+                'imageable_type'=>'App\Models\offer',
+              ]);
+              images_offer::create([
+                'filename'=>'attachments\resturants\images\test_image.jpg',
+                'imageable_id'=>$h,
+                'type'=>'others',
+                'imageable_type'=>'App\Models\offer',
+              ]);
+              $h+=1;
+            }
+             
             /*
         $times=['9:15','9:30','9:45','10:00','11:15'];
         for($i=0; $i<4 ;$i++)
@@ -175,5 +232,16 @@ class DatabaseSeeder extends Seeder
         */
         //reviews
         //images 
+        $icons = [
+         
+          ['name' => 'Icon 1', 'image' => 'attachments\resturants\images\wifi.png'],
+          ['name' => 'Icon 2', 'image' => 'attachments\resturants\images\wifi.png'],
+      ];
+      foreach ($icons as $icon) {
+          DB::table('icons')->insert([
+              'name' => $icon['name'],
+              'image' => $icon['image'],
+          ]);
+      }
     }
 }

@@ -11,12 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('images_offers', function (Blueprint $table) {
+        Schema::create('icons', function (Blueprint $table) {
             $table->id();
-            $table->string('filename');
-            $table->string('type')->default('craousal');
-            $table->integer('imageable_id');
-            $table->string('imageable_type');
+            $table->string('name');
+            $table->string('image');
             $table->timestamps();
         });
     }
@@ -26,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('images_offers');
+        Schema::dropIfExists('icons');
     }
 };

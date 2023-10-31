@@ -118,8 +118,12 @@
                                                     <a class="dropdown-item"
                                                         href="{{ route('resturants.show', $resturant->id) }}">Profile
                                                         Details</a>
-                                                        <a class="dropdown-item"
-                                                        href="{{ route('rest_tables', $resturant->id) }}">Tables Management</a>
+                                                    <a class="dropdown-item"
+                                                        href="{{ route('rest_tables', $resturant->id) }}">Tables
+                                                        Management</a>
+                                                    <a class="dropdown-item"
+                                                        href="{{ route('offers_index', $resturant->id) }}">Offers
+                                                        Management</a>
                                                     <a class="dropdown-item"
                                                         href="{{ route('resturant_reservations', $resturant->id) }}">
                                                         reservaions Details</a>

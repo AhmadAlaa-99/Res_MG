@@ -137,12 +137,14 @@ class AuthController extends BaseController
     }
     public function register_complete(Request $request)
     {
+        
         $customer=Customer::where('phone',$request->phone)->first();
         $rules = [
             'password' => 'required|confirmed|min:8|regex:/[a-zA-Z0-9@!#£$%^&*()_+{}":;\'?\/\\.,`~]+/',
             'gender' => 'required|in:male,female',
             'State' => 'required',
             'profile_pic' => 'sometimes|image|max:500', // max 500KB
+        //    'birth_date'=>'required'
             // Add other fields as needed
         ];
     
@@ -156,22 +158,20 @@ class AuthController extends BaseController
                 'status' => false,
             ], 403);
         }
-    
         // Your existing update logic
         $customer->update([
             'password' => bcrypt($request->password),
             'allow_notify' => $request->allow_notify,
             'gender' => $request->gender,
             'State' => $request->State,
+            'birth_date'=>$request->birth_date,
         ]);
-    
         if ($request->hasfile('profile_pic')) {
             $file = $request->file('profile_pic');
             $name = $file->getClientOriginalName();
             $file->storeAs('Users/profile_pic/'.$customer->phone, $name, 'upload_images');
             $customer->update(['profile_pic' => $name]);
         }
-    
         return response()->json([
             'message' => 'Successful',
             'status' => true,

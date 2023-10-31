@@ -5,29 +5,134 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use App\Http\Controllers\BaseController;
 use App\Models\Table;
+use Illuminate\Support\Facades\DB;
 use Hash;
+use Carbon\Carbon;
+use App\Models\images_offers;
 use App\Models\Cuisine;
+use App\Models\offer;
 use App\Models\Menu; 
 use App\Models\Image;
 use App\Models\Reservation;
 use App\Models\Reviews;
 use App\Models\Customer;
-use Illuminate\Support\Facades\DB;
 use App\Models\Resturant;
 class UserController extends BaseController
 {
 
    public function proposal_resturants(Request $request)
    {
-//       ForYou(location - age. (ages accept from dashboard resturant))
-// Featured(rating - reservations)
-// Based on Your taste(algorithm  selected - dynamic)
-// [nameCate - Desc - rest(image - name - cuisine - rating(number) - location) with distanse about location cureent].
-// New Opening - Offers : [images just].
-      //all resturants(id name location rating open.close deposit images) orderby cuisine(id name desc).
-   $resturants=Cuisine::with(['resturants' => function ($query) {
-   $query->select('id','name','time_start','time_end','deposit','rating')->with('location','images');}])->get();
-   return $this->sendResponse($resturants,'proposal_resturants');
+      //حسب الموقع الاقرب والعمر المناسب
+      $userBirthDate = Customer::where('id',Auth::guard('customer-api')->id())->first()->birth_date;
+      $userAge = \Carbon\Carbon::parse($userBirthDate)->age;
+      
+      $userLatitude = 30.0444;   
+      $userLongitude = 31.2357; 
+      
+   //    $forYouResturants = Resturant::select(
+   //       'resturants.*',
+   //       DB::raw('ABS(TIMESTAMPDIFF(YEAR,?, CURDATE())) - age_range AS age_difference'),
+   //       DB::raw('(6371 * acos(cos(radians(?)) * cos(radians(latitude)) * cos(radians(longitude) - radians(?)) + sin(radians(?)) * sin(radians(latitude)))) AS distance')
+   //   )
+   //   ->join('locations', 'resturants.id', '=', 'locations.resturant_id')
+   //   ->orderBy('age_difference')
+   //   ->orderBy('distance')
+   //   ->setBindings([$userAge,$userLatitude, $userLongitude, $userLatitude])
+   //   ->with('cuisine','images','location')->get();
+    
+     $forYouResturants = Resturant::select(
+      'resturants.*',
+      DB::raw('ABS(TIMESTAMPDIFF(YEAR,?, CURDATE())) - age_range AS age_difference'),
+      DB::raw('(6371 * acos(cos(radians(?)) * cos(radians(latitude)) * cos(radians(longitude) - radians(?)) + sin(radians(?)) * sin(radians(latitude)))) AS distance')
+  )
+  ->join('locations', 'resturants.id', '=', 'locations.resturant_id')
+  ->orderBy('age_difference')
+  ->orderBy('distance')
+  ->setBindings([$userAge, $userLatitude, $userLongitude, $userLatitude])
+  ->with(['cuisine', 'images' => function ($query) {
+      $query->where('type', 'main');
+  }, 'location'])
+  ->get()
+  ->map(function ($restaurant) {
+      return [
+          'id'=>$restaurant->id,
+          'name'=>$restaurant->name,
+          'deposite'=>$restaurant->deposit,
+          'cuisine_name' => $restaurant->cuisine->name,
+          'category' => $restaurant->category,
+          'location_text' => $restaurant->location->text,
+          'rating_number' => $restaurant->rating,
+          'images' => $restaurant->images->pluck('filename') // Assuming you only want the file names
+      ];
+  });
+  
+$featuredResturants = Resturant::with(['cuisine', 'images' => function ($query) {
+   $query->where('type', 'main');
+}, 'location'])
+->get()
+->map(function ($restaurant) {
+   return [
+       'id'=>$restaurant->id,
+       'name'=>$restaurant->name,
+       'deposite'=>$restaurant->deposit,
+       'cuisine_name' => $restaurant->cuisine->name,
+       'category' => $restaurant->category,
+       'location_text' => $restaurant->location->text,
+       'rating_number' => $restaurant->rating,
+       'images' => $restaurant->images->pluck('filename') // Assuming you only want the file names
+   ];
+});
+
+//مطاعم حسب اختيارات المسستخدم في الحجوزات الأخرى 
+$userId=Auth::guard('customer-api')->id();
+$basedOnYourTasteResturants = Resturant::select(
+   'resturants.*',
+   DB::raw('ABS(TIMESTAMPDIFF(YEAR,?, CURDATE())) - age_range AS age_difference'),
+   DB::raw('(6371 * acos(cos(radians(?)) * cos(radians(latitude)) * cos(radians(longitude) - radians(?)) + sin(radians(?)) * sin(radians(latitude)))) AS distance')
+)
+->join('locations', 'resturants.id', '=', 'locations.resturant_id')
+->orderBy('age_difference')
+->orderBy('distance')
+->setBindings([$userAge,$userLatitude, $userLongitude, $userLatitude])->with(['cuisine', 'images' => function ($query) {
+   $query->where('type', 'main');
+}, 'location'])
+->get()
+->map(function ($restaurant) {
+   return [
+       'id'=>$restaurant->id,
+       'name'=>$restaurant->name,
+       'deposite'=>$restaurant->deposit,
+       'cuisine_name' => $restaurant->cuisine->name,
+       'category' => $restaurant->category,
+       'location_text' => $restaurant->location->text,
+       'rating_number' => $restaurant->rating,
+       'images' => $restaurant->images->pluck('filename') // Assuming you only want the file names
+   ];
+});
+$new_opening = DB::table('images_offers')
+    ->join('offers', 'images_offers.imageable_id', '=', 'offers.id')
+    ->select('images_offers.id','images_offers.imageable_id', 'images_offers.filename')
+    ->where('offers.type', 'new_opening')
+    ->where('images_offers.type', 'cover')
+    ->get();
+    $offers = DB::table('images_offers')
+    ->join('offers', 'images_offers.imageable_id', '=', 'offers.id')
+    ->select('images_offers.id', 'images_offers.imageable_id', 'images_offers.filename')
+    ->where('offers.type', 'offer')
+    ->where('images_offers.type', 'cover')
+    ->get();
+   // $resturants=Cuisine::with(['resturants' => function ($query) {
+   // $query->select('id','name','time_start','time_end','deposit','rating')->with('location','images');}])->get();
+   // return $this->sendResponse($resturants,'proposal_resturants');
+   $data = [
+      'forYouResturants' => $forYouResturants,
+      'featuredResturants' => $featuredResturants,
+      'basedOnYourTasteResturants' => $basedOnYourTasteResturants,
+      'offers' => $offers,
+      'new_opening' => $new_opening,
+  ];
+  // Return the associative array as a JSON response
+  return response()->json($data);
    }
    public function details($id) //with viewMap
    {
@@ -36,18 +141,51 @@ class UserController extends BaseController
       // Name - location - Services(icon with name)
       // Num rating - rating -menu 
       // suggestion resturants similiar 
-      // --------------------------------
+      // --------------------------------  services - suggestion.
       // Details bOOK Res :
       // image - images - description - services(icon with names) -location on map - 
       // location - phone - website - insta - deposite_information - refund Policy 
       // change Policy - CANCELLED POLICY
-      // --------------------------------
-
+      // -------------------------------
 
       //images - Name - State - City - Description -  RATING(NUM)-  Reviews (stars mumb - num reviews)
-      $resturant=Resturant::where('id',$id)->with('images','reviews','location') //,'reservations','location'
-      ->withCount('reviews as count_reviews')->first();
-      return $this->sendResponse($resturant,'resturant_details');
+      $resturant = Resturant::select(['id','time_start','cuisine_id','time_end', 'name', 'description', 
+      'age_range', 'category', 'phone_number', 'deposit', 'rating', 'services'])
+      ->where('id', $id)
+      ->with([
+          'images' => function ($query) {
+              $query->select(['id', 'filename', 'type', 'imageable_id']); // Include the foreign key
+          },
+         
+          
+          'location' => function ($query) {
+              $query->select(['id', 'latitude', 'longitude', 'state', 'text', 'resturant_id']); // Include the foreign key
+          },
+          'reviews',
+          'cuisine',
+      ])
+      ->withCount('reviews as count_reviews')
+      ->first();
+      $suggestions = Resturant::where('category',$resturant->category)->select(
+         'resturants.*')
+     ->join('locations', 'resturants.id', '=', 'locations.resturant_id')
+     ->with(['cuisine', 'images' => function ($query) {
+         $query->where('type', 'main');
+     }, 'location'])
+     ->get()
+     ->map(function ($restaurant) {
+         return [
+             'id'=>$restaurant->id,
+             'name'=>$restaurant->name,
+             'deposite'=>$restaurant->deposit,
+             'cuisine_name' => $restaurant->cuisine->name,
+             'category' => $restaurant->category,
+             'location_text' => $restaurant->location->text,
+             'rating_number' => $restaurant->rating,
+             'images' => $restaurant->images->pluck('filename') // Assuming you only want the file names
+         ];
+     });
+      return $this->sendResponse(['resturant_details'=>$resturant,'suggestions'=>$suggestions],'resturant_details');
    }
    public function available_reservations(Request $request,$id)
     //Request : id_res - num_persons - date    return -times_availables
@@ -116,12 +254,14 @@ class UserController extends BaseController
 // Recommend based on you followed : 
    $customer = Customer::find(Auth::guard('customer-api')->id());
    $followedRestaurantIds = $customer->followed_restaurants; 
-   $followings = Restaurant::whereIn('id', $followedRestaurantIds)
-   ->select('id','name','time_start','time_end','deposit','rating')->with('location','images')
-   ->get();
-   $recommends=Resturants::select('id','name','time_start','time_end','deposit','rating')
-   ->with('location','images')->get();
-   return $this->sendResponse($resturants,'proposal_resturants');
+   $followings = Resturant::whereIn('id', $followedRestaurantIds)
+   ->select('id','name','description','rating')->with(['images' => function($query) {
+      $query->select('id','imageable_id','filename')->where('type','logo');
+  }])->get();
+   $recommends=Resturant::select('id','name','description','rating')->with(['images' => function($query) {
+      $query->select('id','imageable_id','filename')->where('type','logo');
+  }])->get();
+   return $this->sendResponse(['followings'=>$followings,'recommends'=>$recommends],'followings_recommends');
  }
  public function my_reservations()
  {
@@ -179,58 +319,198 @@ $restaurants = Restaurant::with('images', 'cuisine')
     ->get();
 
  }
-   public function search(Request $request)//name 
-    {
-      //nameor cuisine or location or type
-      $resturant=Resturant::where('name',$request->name)->with('images','reviews','location')
-      ->withCount('reviews as count_reviews')->first();
-      return $this->sendResponse($resturant,'search');
-
-    } 
-   public function advansearch(Request $request) // people date  time (return rsturants have reservation_available)
-    { 
-      $results=Reservation::where(
-         [
-            'reservation_time'=>$request->reservation_time,
-             'reservation_date'=>$request->reservation_date,
-
-         ])->with(['resturant' => function ($query) {
-      $query->select('id','name','time_start','time_end','deposit','rating')->with('location','images');}])->get();
-     }
-   public function filtersearch(Request $request) //request : sort_type(rating - Distance )
-   //Sort by rating Distance show following just price range Cuisine  Type
-    {
-//       sort by : revelance - distance 
-// follow only 
-// cuisine type(multiple)
-// type_res
-      $userLatitude = 'user_latitude_here';
-      $userLongitude = 'user_longitude_here';
-      $userState = 'user_state_here';
-      $sortType = request('sort_type');
-      $followedRestaurants = json_decode(Auth::user()->followed_restaurants); 
-      $cuisineType = request('cuisine_type'); 
-      $restaurantsQuery = Restaurant::with('images', 'cuisine')
-          ->select('restaurants.*')
-          ->selectRaw('( 6371 * acos( cos( radians(?) ) *
-                                 cos( radians( latitude ) )
-                                 * cos( radians( longitude ) - radians(?)
-                                 ) + sin( radians(?) ) *
-                                 sin( radians( latitude ) ) )
-                               ) AS distance', [$userLatitude, $userLongitude, $userLatitude])
-          ->join('locations', 'locations.restaurant_id', '=', 'restaurants.id')
-          ->join('cuisines', 'cuisines.id', '=', 'restaurants.cuisine_id')
-          ->where('locations.state', $userState)
-          ->where('cuisines.name', $cuisineType)
-          ->whereIn('restaurants.id', $followedRestaurants);
-      if ($sortType === 'rating') {
-          $restaurantsQuery = $restaurantsQuery->orderBy('restaurants.rating', 'DESC');
-      } elseif ($sortType === 'distance') {
-          $restaurantsQuery = $restaurantsQuery->orderBy('distance', 'ASC');
-      }
-      $restaurants = $restaurantsQuery->get();
-      return $restaurants;
+ public function search(Request $request)
+{
+    // Name, cuisine, location (state), or category search term
+    $word = $request->input('word');
+    if (empty($word)) {
+        return 'Please enter a search term';
     }
+    $resturants = Resturant::where('name', 'LIKE', '%' . $word . '%')
+        ->orWhereHas('cuisine', function ($query) use ($word) {
+            $query->where('name', 'LIKE', '%' . $word . '%');
+        })
+        ->orWhereHas('location', function ($query) use ($word) {
+            $query->where('state', 'LIKE', '%' . $word . '%');
+        })
+        ->select('id','name','description','rating')->with(['images' => function($query) {
+         $query->select('id','imageable_id','filename')->where('type','logo');
+     }])->get();
+    $userFollowedResturantIds = auth()->user()->followed_restaurants ?? [];
+    $followedResturants = [];
+    $otherResturants = [];
+    foreach ($resturants as $resturant) {
+        if (in_array($resturant->id, $userFollowedResturantIds)) {
+            $followedResturants[] = $resturant;
+        } else {
+            $otherResturants[] = $resturant;
+        }
+    }
+    $result = [
+        'following' => $followedResturants,
+        'others' => $otherResturants,
+    ];
+    return $this->sendResponse($result, 'search_results');
+}
+
+   public function advansearch(Request $request) 
+    {
+      //people  date  time (return rsturants have reservation_available) 
+      $people = $request->input('people');
+      $time = $request->input('time');
+      $date = $request->input('date');
+      $reservationDateTime = Carbon::parse($date . ' ' . $time);
+      $resturants = Resturant::whereHas('tables', function ($query) use ($people, $reservationDateTime) {
+          $query->where('capacity', '=', $people)
+                ->whereHas('reservations', function ($query) use ($reservationDateTime) {
+                    $query->where('status', '=', 'scheduled')
+                          ->where('reservation_time', '=', $reservationDateTime->format('H:i:s'))
+                          ->where('reservation_date', '=', $reservationDateTime->toDateString());
+                });
+      })->select('id','name','description','rating')->with(['images' => function($query) {
+         $query->select('id','imageable_id','filename')->where('type','logo');
+     }])->get();
+    $userFollowedResturantIds = auth()->user()->followed_restaurants ?? [];
+    $followedResturants = [];
+    $otherResturants = [];
+    foreach ($resturants as $resturant) {
+        if (in_array($resturant->id, $userFollowedResturantIds)) {
+            $followedResturants[] = $resturant;
+        } else {
+            $otherResturants[] = $resturant;
+        }
+    }
+    $result = [
+        'following' => $followedResturants,
+        'others' => $otherResturants,
+    ];
+    return $this->sendResponse($result, 'search_results');
+   
+     }
+//    public function filtersearch(Request $request) 
+//     {
+//     $longitude ='12.675657';// $request->input('longitude'); 
+//     $latitude ='43243523.464363'; //$request->input('latitude');  
+//     $sortType = $request->input('sort_type', 'rating'); 
+//     $followOnly = $request->input('follow_only', false);
+//     $nameCuisines = $request->input('name_cuisine',[]);
+//     $categories = $request->input('category',[]);   
+//     $query = Resturant::query();
+//     if ($followOnly) {
+//         $query->whereIn('id',Auth::guard('customer-api')->followed_restaurants ?? []);
+//     }
+//     if (!empty($nameCuisines)) {
+//         $query->whereIn('cuisine_id', function ($query) use ($nameCuisines) {
+//             $query->select('id')
+//                 ->from('cuisines')
+//                 ->whereIn('name', $nameCuisines);
+//         });
+//     }
+
+//     if (!empty($categories)) {
+//         $query->whereIn('category', $categories);
+//     }
+
+//     // Sort the results based on the chosen sort type
+//     if ($sortType === 'distance' && $longitude && $latitude) {
+//         $query->selectRaw(
+//             '(6371 * acos(cos(radians(?)) * cos(radians(locations.latitude)) * 
+//             cos(radians(locations.longitude) - radians(?)) + sin(radians(?)) * 
+//             sin(radians(locations.latitude)))) as distance',
+//             [$latitude, $longitude, $latitude]
+//         )->orderBy('distance', 'asc');
+//         $query->join('location', 'resturants.id', '=', 'locations.resturant_id');
+//     } else {
+//         $query->orderBy('rating', 'desc');
+//     }
+
+//     // Retrieve the filtered and sorted restaurants
+//     $resturants = $query->select('id','name','description','rating')->with(['images' => function($query) {
+//       $query->select('id','imageable_id','filename')->where('type','logo');
+//   }])->get();
+//  $userFollowedResturantIds = auth()->user()->followed_restaurants ?? [];
+//  $followedResturants = [];
+//  $otherResturants = [];
+//  foreach ($resturants as $resturant) {
+//      if (in_array($resturant->id, $userFollowedResturantIds)) {
+//          $followedResturants[] = $resturant;
+//      } else {
+//          $otherResturants[] = $resturant;
+//      }
+//  }
+//  $result = [
+//      'following' => $followedResturants,
+//      'others' => $otherResturants,
+//  ];
+//  return $this->sendResponse($result, 'search_results');
+//     }
+public function filtersearch(Request $request)
+{
+    $longitude = '12.675657'; // $request->input('longitude');
+    $latitude = '43243523.464363'; // $request->input('latitude');
+    $sortType = $request->input('sort_type', 'rating');
+    $followOnly = $request->input('follow_only', false);
+    $nameCuisines = $request->input('name_cuisine', []);
+    $categories = $request->input('category', []);
+    $query = Resturant::query();
+
+    if ($followOnly) {
+        $query->whereIn('id', Auth::guard('customer-api')->user()->followed_resturants ?? []);
+    }
+
+    if (empty($nameCuisines)) {
+        $nameCuisines = []; // Convert to an empty array if it's empty
+    }
+
+    if (!empty($nameCuisines)) {
+        $query->whereIn('cuisine_id', function ($query) use ($nameCuisines) {
+            $query->select('id')
+                ->from('cuisines')
+                ->whereIn('name', $nameCuisines);
+        });
+    }
+
+    if (!empty($categories)) {
+        $query->whereIn('category', $categories);
+    }
+
+    // Sort the results based on the chosen sort type
+    if ($sortType === 'distance' && $longitude && $latitude) {
+        $query->selectRaw(
+            '(6371 * acos(cos(radians(?)) * cos(radians(locations.latitude)) * 
+            cos(radians(locations.longitude) - radians(?)) + sin(radians(?)) * 
+            sin(radians(locations.latitude)))) as distance',
+            [$latitude, $longitude, $latitude]
+        )->orderBy('distance', 'asc');
+        $query->join('locations', 'resturants.id', '=', 'locations.resturant_id');
+    } else {
+        $query->orderBy('rating', 'desc');
+    }
+    // Retrieve the filtered and sorted resturants
+    $resturants = $query->select('id', 'name', 'description', 'rating')
+        ->with(['images' => function ($query) {
+            $query->select('id', 'imageable_id', 'filename')->where('type', 'logo');
+        }])
+        ->get();
+    $userFollowedResturantIds = auth()->guard('customer-api')->user()->followed_restaurants ?? [];
+    $followedResturants = [];
+    $otherResturants = [];
+
+    foreach ($resturants as $resturant) {
+        if (in_array($resturant->id, $userFollowedResturantIds)) {
+            $followedResturants[] = $resturant;
+        } else {
+            $otherResturants[] = $resturant;
+        }
+    }
+    $result = [
+        'following' => $followedResturants,
+        'others' => $otherResturants,
+    ];
+
+    return $this->sendResponse($result, 'search_results');
+}
+
    public function review(Request $request,$id)
    {
   
@@ -255,15 +535,20 @@ $restaurants = Restaurant::with('images', 'cuisine')
    public function details_offer($id)
    {
       // IMAGE - PRICE_OLD - PRICE_NEW - DESC - NAME_OFFER - FEATURES - IMAGES
+      $offer=offer::where('id',$id)
+      ->with(['images' => function($query) {
+          $query->select('id','imageable_id','filename','type');
+      }])->first();
+      return $this->sendResponse($offer,'details_offer');
    }
    public function available_times($id)  //id res
    {
       // request : date - numPersone - return : time
    }
-   public function nearest_resturants()
+   public function nearest_resturants(Request $request)
    {
      // name_cat : (rating - name - ? - available - distance)
-
+    return $this->sendResponse($resturants,'details_offer');
    }
    public function category_resturants($id)
    {

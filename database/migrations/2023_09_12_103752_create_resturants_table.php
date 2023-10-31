@@ -23,9 +23,12 @@ return new class extends Migration
             $table->date('Activation_end');
             $table->text('name');
             $table->text('description');
+            $table->text('age_range')->nullable();
+            $table->string('category')->default('resturant');
             $table->string('phone_number');
             $table->float('deposit')->default('0');
             $table->float('rating')->default('0');
+            $table->json('services')->nullable();
             $table->timestamps();
         });
     }

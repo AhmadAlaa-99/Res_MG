@@ -22,10 +22,12 @@ return new class extends Migration
             $table->string('State')->nullable();
             $table->boolean('allow_notify')->default('0');
             $table->boolean('isVerified')->default('0');
-            $table->string('profile_pic')->nullable();;
-            $table->string('otp')->nullable();;
+            $table->string('profile_pic')->nullable();
+            $table->string('birth_date')->nullable();
+            $table->string('otp')->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->json('followed_restaurants')->nullable();
+            $table->json('coordinates')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });

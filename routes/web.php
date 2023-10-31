@@ -47,7 +47,13 @@ Route::group([
 
     Route::resource('users', UserController::class);
     Route::resource('roles', RoleController::class);
+
     Route::resource('offers', OfferController::class);
+    Route::get('/offers_index/{id}', [OfferController::class, 'offers_index'])->name('offers_index');
+    Route::get('/act_inact__offer/{id}', [DashboardController::class, 'act_inact__offer'])->name('act_inact__offer');  //id resturant
+    
+
+
 
     Route::get('/managers', [UserController::class, 'managers'])->name('managers');
     Route::get('/', [DashboardController::class, 'statistics'])->name('statistics');

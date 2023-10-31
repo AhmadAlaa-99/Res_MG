@@ -11,8 +11,18 @@ return new class extends Migration
      */
     public function up(): void
     {
+          // images - price_old -   price_new - desc - name - featured - res_id
         Schema::create('offers', function (Blueprint $table) {
             $table->id();
+            $table->bigInteger('resturant_id')->unsigned();
+            $table->foreign('resturant_id')->references('id')->on('resturants')->onDelete('cascade');
+            $table->string('price_old');
+            $table->string('price_new');
+            $table->string('desc');
+            $table->string('name');
+            $table->string('type');
+            $table->string('status')->default('active');
+            $table->json('featured')->nullable();
             $table->timestamps();
         });
     }

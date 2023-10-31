@@ -32,7 +32,8 @@
                                             </label>
                                             <div class="col-lg-6">
                                                 <input type="text" class="form-control" id="validationCustom01"
-                                                    placeholder="Enter a username.." value="testname"name="user_name" required="">
+                                                    placeholder="Enter a username.." value="testname"name="user_name"
+                                                    required="">
                                                 @error('user_name')
                                                     <div class="alert alert-danger">{{ $message }}</div>
                                                 @enderror
@@ -47,7 +48,8 @@
                                             </label>
                                             <div class="col-lg-6">
                                                 <input type="text" class="form-control" name="email"
-                                                    id="validationCustom02" value="testname@gmail.com" placeholder="Your valid email.." required="">
+                                                    id="validationCustom02" value="testname@gmail.com"
+                                                    placeholder="Your valid email.." required="">
                                                 @error('email')
                                                     <div class="alert alert-danger">{{ $message }}</div>
                                                 @enderror
@@ -78,7 +80,8 @@
                                             </label>
                                             <div class="col-lg-6">
                                                 <input type="text" class="form-control" id="validationCustom08"
-                                                    placeholder="963-9376-07234" value="0976768877"name="user_phone" required="">
+                                                    placeholder="963-9376-07234" value="0976768877"name="user_phone"
+                                                    required="">
                                                 @error('user_phone')
                                                     <div class="alert alert-danger">{{ $message }}</div>
                                                 @enderror
@@ -119,7 +122,8 @@
                                             </label>
                                             <div class="col-lg-6">
                                                 <input type="text" class="form-control" id="validationCustom08"
-                                                    placeholder="location details" value="testlocation" name="location" required="">
+                                                    placeholder="location details" value="testlocation" name="location"
+                                                    required="">
                                                 @error('location')
                                                     <div class="alert alert-danger">{{ $message }}</div>
                                                 @enderror
@@ -149,7 +153,8 @@
                                             </label>
                                             <div class="col-lg-6">
                                                 <input type="text" name="longitude" id="longitude"
-                                                    class="form-control" value="0.0" placeholder="longitude" required="">
+                                                    class="form-control" value="0.0" placeholder="longitude"
+                                                    required="">
                                                 @error('longitude')
                                                     <div class="alert alert-danger">{{ $message }}</div>
                                                 @enderror
@@ -168,7 +173,8 @@
                                             </label>
                                             <div class="col-lg-6">
                                                 <input type="text" name="resturant_name" class="form-control"
-                                                    id="validationCustom06" value="test_resname"placeholder="resturant_name" required>
+                                                    id="validationCustom06"
+                                                    value="test_resname"placeholder="resturant_name" required>
                                                 <div class="invalid-feedback">
                                                     @error('resturant_name')
                                                         <div class="alert alert-danger">{{ $message }}</div>
@@ -183,7 +189,8 @@
                                             </label>
                                             <div class="col-lg-6">
                                                 <input type="text" class="form-control" id="validationCustom08"
-                                                    placeholder="963-9376-07234" value="0999999999" name="resturant_phone" required="">
+                                                    placeholder="963-9376-07234" value="0999999999"
+                                                    name="resturant_phone" required="">
                                                 @error('resturant_phone')
                                                     <div class="alert alert-danger">{{ $message }}</div>
                                                 @enderror
@@ -217,8 +224,9 @@
                                                 <span class="text-danger">*</span>
                                             </label>
                                             <div class="col-lg-6">
-                                                <input type="text" value="desc" name="description"class="form-control"
-                                                    id="validationCustom07" placeholder="description" required="">
+                                                <input type="text" value="desc"
+                                                    name="description"class="form-control" id="validationCustom07"
+                                                    placeholder="description" required="">
                                                 @error('description')
                                                     <div class="alert alert-danger">{{ $message }}</div>
                                                 @enderror
@@ -243,20 +251,20 @@
                                             </div>
                                         </div>
                                         <!-- <div class="mb-3 row">
-                                                                <label class="col-lg-4 col-form-label" for="validationCustom09">location <span
-                                                                        class="text-danger">*</span>
-                                                                </label>
-                                                                <div class="col-lg-6">
-                                                                    <input type="text" class="form-control"name="location"
-                                                                        id="validationCustom09" placeholder="location" required="">
-                                                                    @error('location')
+                                                                            <label class="col-lg-4 col-form-label" for="validationCustom09">location <span
+                                                                                    class="text-danger">*</span>
+                                                                            </label>
+                                                                            <div class="col-lg-6">
+                                                                                <input type="text" class="form-control"name="location"
+                                                                                    id="validationCustom09" placeholder="location" required="">
+                                                                                @error('location')
         <div class="alert alert-danger">{{ $message }}</div>
     @enderror
-                                                                    <div class="invalid-feedback">
-                                                                        Please enter a location.
-                                                                    </div>
-                                                                </div>
-                                                            </div> -->
+                                                                                <div class="invalid-feedback">
+                                                                                    Please enter a location.
+                                                                                </div>
+                                                                            </div>
+                                                                        </div> -->
                                         <div class="mb-3 row">
                                             <label class="col-lg-4 col-form-label"
                                                 for="validationCustom09">Activation_start <span
@@ -290,7 +298,8 @@
                                             </div>
                                         </div>
                                         <div class="input-group mb-3">
-                                          <label class="col-lg-4 col-form-label" for="validationCustom09">Images(Craousal)
+                                            <label class="col-lg-4 col-form-label"
+                                                for="validationCustom09">Images(Craousal)
                                                 <span class="text-danger">*</span>
                                             </label>
                                             <div class="col-lg-6">
@@ -305,7 +314,7 @@
                                             </div>
                                         </div>
                                         <div class="input-group mb-3">
-                                          <label class="col-lg-4 col-form-label" for="validationCustom09">Image(Logo)
+                                            <label class="col-lg-4 col-form-label" for="validationCustom09">Image(Logo)
                                                 <span class="text-danger">*</span>
                                             </label>
                                             <div class="col-lg-6">
@@ -325,6 +334,34 @@
                                     </div>
 
                                 </div>
+                                <div class="col-xl-12">
+                                    <div class="icons">
+                                        @foreach ($icons as $icon)
+                                            <div class="icon">
+                                                <img src="{{ asset($icon->image) }}" alt="{{ $icon->name }}">
+                                                <p>{{ $icon->name }}</p>
+                                            
+
+
+
+
+                                                <input type="checkbox" name="services[]"
+                                                    value="{{ $icon->id }}">
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                </div>
+                                
+<style>
+    .icons {
+        display: flex;
+        flex-wrap: wrap;
+    }
+    .icon {
+        margin: 10px;
+        text-align: center;
+    }
+</style>
                                 <div class="col-xl-12">
                                     <style>
                                         .sub {
@@ -361,7 +398,7 @@
             var map = L.map('map').setView([33.5138, 36.2765], 10);
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">
-                OpenStreetMap</a> contributors'
+                OpenStreetMap < /a> contributors'
             }).addTo(map);
 
             map.on('click', function(e) {

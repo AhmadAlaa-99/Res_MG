@@ -19,7 +19,8 @@ class Customer extends Authenticatable
 
 
     protected $casts = [
-        'followed_restaurants' => 'array', // Cast to array
+        'followed_restaurants' => 'array', 
+        'coordinates' => 'array', 
     ];
 
 

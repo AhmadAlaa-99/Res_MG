@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests\ResturantRequest;
 use App\Models\Table;
 use Auth;
+use App\Models\icon;
 use Hash;
 use Carbon\Carbon;
 use App\Models\User;
@@ -63,11 +64,19 @@ class DashboardController extends Controller
     {
         
         $cuisins=Cuisine::all();
-        return view('Admin.Resturants.create', compact('cuisins'));
+        $icons = icon::all();
+        return view('Admin.Resturants.create', compact('cuisins','icons'));
     }
 
     public function store(Request $request)
     {
+        $selectedIconIds = $request->input('services', []);
+        $selectedIcons = Icon::whereIn('id', $selectedIconIds)->get();
+        
+        // If you want to return the images mapped by name
+        $services = $selectedIcons->pluck('image', 'name')->toArray();
+       
+
     // try {
       // resturant : name - description - location(text - map ) - cuisine(type) - images
       User::create([
@@ -89,39 +98,45 @@ class DashboardController extends Controller
         'Activation_start'=>$request->Activation_start,
         'Activation_end'=>$request->Activation_end,
         'phone_number'=>$request->resturant_phone,
-        'deposit'=>$request->deposite
+        'deposit'=>$request->deposite,
+        'age_range'=>serialize(['start_age' =>18,'end_age' => 30]),
+        'services' => json_encode($services),
       //  'work_time'=>$request->work_time,
         //'images'=>$request->images,
       ]);
     $resturant=Resturant::latest()->first();
     $user= User::latest()->first(); 
-      if($request->hasfile('images'))
-      {
-          foreach($request->file('images') as $file)
-          {
-              $name = $file->getClientOriginalName();
-              $file->storeAs('attachments/resturants/'.$resturant->name, $file->getClientOriginalName(),'upload_images');
-              // insert in image_table
-              $images= new Image();
-              $images->filename=$name;
-              $images->imageable_id= $resturant->id;
-              $images->imageable_type='App\Models\Resturant';
-              $images->save();
-          }
-      }
-      if($request->hasfile('logo'))
-      {
-              $file=$request->file('logo');
-              $name = $file->getClientOriginalName();
-              $file->storeAs('attachments/resturants/'.$resturant->name, $file->getClientOriginalName(),'upload_images');
-              // insert in image_table
-              $image= new Image();
-              $image->filename=$name;
-              $image->imageable_id= $resturant->id;
-              $image->type='logo';
-              $image->imageable_type='App\Models\Resturant';
-              $image->save();
-      }
+    if($request->hasfile('images')) {
+        foreach($request->file('images') as $file) {
+            $originalName = $file->getClientOriginalName();
+            $directoryPath = 'attachments/resturants/images/' . $resturant->name . '/';
+            
+            // Store the file and get the full path
+            $filePath = $file->storeAs($directoryPath, $originalName, 'upload_images');
+            
+            // insert in image_table
+            $images = new Image();
+            $images->filename = $filePath; // Storing the full path
+            $images->imageable_id = $resturant->id;
+            $images->imageable_type = 'App\Models\Resturant';
+            $images->save();
+        }
+    }    
+    if($request->hasFile('logo')) {
+        $file = $request->file('logo');
+        $name = $file->getClientOriginalName();
+        $directoryPath = 'attachments/resturants/logo/' . $resturant->name . '/';
+        $filePath = $file->storeAs($directoryPath, $name, 'upload_images');
+        
+        // insert in image_table
+        $image = new Image();
+        $image->filename = $filePath;  // Storing the full path
+        $image->imageable_id = $resturant->id;
+        $image->type = 'logo';
+        $image->imageable_type = 'App\Models\Resturant';
+        $image->save();
+    }
+    
     $resturant=Resturant::latest()->first();
     Location::create([
         'resturant_id'=>$resturant->id,
@@ -376,6 +391,7 @@ public function markAsRead(Request $request)
 {
     return auth()->user()->notifications->where('id', $request->id)->markAsRead();
 }
+
 
 // public function markAsReadAndRedirect($id)
 // {
