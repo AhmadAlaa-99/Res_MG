@@ -15,7 +15,6 @@ class Resturant extends Model
 {
     use HasFactory;
     protected $guarded=[''];
- 
     public function cuisine()
         {
             return $this->belongsTo(Cuisine::class);

@@ -1771,7 +1771,7 @@ progress {
   color: #969ba0;
   background-color: #f6f6f6;
   background-clip: padding-box;
-  border: 1px solid #f5f5f5;
+  border: 1px solid #5bcfc5;
   appearance: none;
   border-radius: 0.75rem;
   transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out; }
@@ -20855,7 +20855,7 @@ Fixing Order => Base + Typography >> General Layout + Grid >> Page Layout + Comp
 
 .form-control {
   background: #fff;
-  border: 0.0625rem solid #f5f5f5;
+  border: 0.0625rem solid #5bcfc5;
   padding: 0.3125rem 1.25rem;
   color: #6e6e6e;
   height: 3.5rem;

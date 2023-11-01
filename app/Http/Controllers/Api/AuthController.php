@@ -18,8 +18,24 @@ class AuthController extends BaseController
 {  
     public function login(Request $request)
     {
+        $customer=Customer::where('phone',$request->phone)->first();
+        if($customer->count() > 0)
+        {
+            if($customer->isVerified=="false"||$customer->is_complete=="false")
+            {
+                $otp=rand(000000,111111);
+                $customer->update(['otp'=>$otp]);
+                return response()->json([
+                    'message'=>'register not completed - verify number',
+                    'status'=>false,
+                    'data'=>$customer,
+                    'token'=>$token ]
+                    ,205);
+            }
+        }
         $rules = [
             'phone' => 'required|numeric|digits:10|exists:customers,phone', 
+            'password'=>'required',
         ];
         $validator = Validator::make($request->all(), $rules);
         // Check if validation fails
@@ -30,55 +46,56 @@ class AuthController extends BaseController
             ], 403);
         }
 
-        $otp=rand(000000,111111);
-        $customer=Customer::where('phone',$request->phone)->first();
-        $customer->update([
-            'otp'=>$otp
-        ]);
+        $customer = Customer::where('phone',$request->phone)->first();
+
+          if (!$customer || !Hash::check($request->password, $customer->password)) {
+            return response([
+                'msg' => 'incorrect phone or password'
+            ], 401);
+        }
+        $token = $customer->createToken('API Token')->accessToken;
+        $res = [
+            'user' => $user,
+            'token' => $token
+         ];
+
         return response()->json([
-            'message'=>'Code Send',
+            'message'=>'sucssefull',
             'status'=>true,
             'data'=>$customer,
-            'otp'=>$otp]
+            'token'=>$token ]
             ,200);
     }
 
     public function create(Request $request)
-    {    
-  
-            $data = $request->all();
-        //     ([
-        //     'firstname' => ['required', 'string', 'max:255'],
-        //     'lastname' => ['required', 'unique:users'],
-        //     'phone' => ['required', 'numeric'],
-        //     'email' => ['required', 'string'],
-        // ]);
-        // return 'ds';
-        // if ($validator->fails()) {
-        //     return response()->json(['errors' => $validator->errors()], 422);
-        // }
+    {   
+        $customer=Customer::where('phone',$request->phone)->first();
+        if($customer)
+        {
+            if($customer->isVerified=="false"||$customer->is_complete=="false")
+            {
+                $otp=rand(000000,111111);
+                $customer->update(['otp'=>$otp]);
+                return response()->json([
+                    'message'=>'register not completed - verify number',
+                    'status'=>false,
+                    'data'=>$customer,
+                    'token'=>$token ]
+                    ,205);
+            }
+        }
 
-        /* Get credentials from .env
-        $token = getenv("TWILIO_AUTH_TOKEN");
-        $twilio_sid = getenv("TWILIO_SID");
-        $twilio_verify_sid = getenv("TWILIO_VERIFY_SID");
-        $twilio = new Client($twilio_sid, $token);
-        $twilio->verify->v2->services($twilio_verify_sid)
-            ->verifications
-            ->create($data['phone_number'], "sms");
-             */
+            $data = $request->all();
             $otp=rand(000000,111111);
             $rules = [
                 'firstname' => 'required|min:3|max:20',
                 'lastname' => 'required|min:3|max:20',
                 'phone' => 'required|numeric|digits:10|unique:customers,phone', // assuming phone numbers are 10 digits long
-                'email' => 'required|email|unique:customers,email',
+                'email' => 'email|unique:customers,email',
                 // Add other fields as needed
-            ];
-        
-            // Create validator
+            ];  
+             // Create validator
             $validator = Validator::make($request->all(), $rules);
-        
             // Check if validation fails
             if ($validator->fails()) {
                 return response()->json([
@@ -90,7 +107,7 @@ class AuthController extends BaseController
             'firstname' => $data['firstname'],  //min:3 max:20  req
             'lastname' => $data['lastname'],  //min:3 max:20  req
             'phone' => $data['phone'],  ////09 : 8numbers numeric  unique req
-            'email' => $data['email'],  //email unique  req
+            'email' => $data['email'],  //email unique  
             'otp'=>$otp,  
         ]); 
         $customer=Customer::latest()->first();
@@ -100,8 +117,6 @@ class AuthController extends BaseController
            'data'=>$customer,
            'otp'=>$otp]
            ,200);
-        
-       // return redirect()->route('verify')->with(['phone_number' => $data['phone_number']]);
     }
     public function verify(Request $request)
     {
@@ -121,7 +136,7 @@ class AuthController extends BaseController
             */
         //if ($verification->valid) {
             $customer = Customer::where('phone', $data['phone_number'])->first();
-            $customer->update(['isVerified' => true]);
+            $customer->update(['isVerified' => true,'otp'=>'-']);
                   //code : required - numeric - num:5
             /* Authenticate user */
            // Auth::login($user->first());
@@ -137,17 +152,16 @@ class AuthController extends BaseController
     }
     public function register_complete(Request $request)
     {
-        
+
         $customer=Customer::where('phone',$request->phone)->first();
         $rules = [
             'password' => 'required|confirmed|min:8|regex:/[a-zA-Z0-9@!#£$%^&*()_+{}":;\'?\/\\.,`~]+/',
             'gender' => 'required|in:male,female',
             'State' => 'required',
             'profile_pic' => 'sometimes|image|max:500', // max 500KB
-        //    'birth_date'=>'required'
-            // Add other fields as needed
+            'birth_date'=>'required'
+            
         ];
-    
         // Create validator
         $validator = Validator::make($request->all(), $rules);
     
@@ -163,6 +177,7 @@ class AuthController extends BaseController
             'password' => bcrypt($request->password),
             'allow_notify' => $request->allow_notify,
             'gender' => $request->gender,
+            'is_complete'=>'1',
             'State' => $request->State,
             'birth_date'=>$request->birth_date,
         ]);
@@ -180,135 +195,105 @@ class AuthController extends BaseController
     }
     public function profile(Request $request)
     {
-        Auth::guard('customer-api')->update([
-            'Password'=>$request->password,
-            'allow_notify'=>$request->password,
-            'gender'=>$request->password,
-            'State'=>$request->password,
-        ]);
+        $customer=Auth::guard('customer-api')->user()->first();
+        return $this->sendResponse($customer,'profile'); 
     }
     public function edit_profile(Request $request)
     { 
         $customer=Customer::where('id',Auth::guard('customer-api')->id())->first();
+        $rules = [
+            'firstname' => 'required|min:3|max:20',
+            'lastname' => 'required|min:3|max:20',
+            'phone' => 'required|numeric|digits:10|unique:customers,phone', // assuming phone numbers are 10 digits long
+            'email' => 'email',
+            'state' => 'required',
+            'gender' => 'required',
+        ];  
+         // Create validator
+        $validator = Validator::make($request->all(), $rules);
+        // Check if validation fails
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => $validator->errors(),
+                'status' => false,
+            ], 403);
+        }
         $customer->update([
-         'name'=>$request->name,
+         'firstname'=>$request->firstname,
+         'lastname'=>$request->lastname,
+         'State'=>$request->location,
          'email'=>$request->email,
-         'phone'=>$request->phone,
+         'gender'=>$request->gender,
         ]);
-        return $customer;
+        return $this->sendResponse($customer,'update successfully');
+       
      }
-        // public function requestRegisterOTP(Request $request)
-    // {
-    //     $validatedData = $request->validate([
-    //         'phone' => 'required|string|unique:users,phone', // Ensure the phone number is unique
-    //     ]);
-
-    //     $otp = rand(100000, 999999); // Generate a 6-digit OTP
-
-    //     $twilio_sid = env('TWILIO_SID');
-    //     $twilio_token = env('TWILIO_TOKEN');
-    //     $twilio_phone = env('TWILIO_PHONE');
-    //     $client = new Client($twilio_sid, $twilio_token);
-
-    //     $client->messages->create(
-    //         $validatedData['phone'],
-    //         [
-    //             'from' => $twilio_phone,
-    //             'body' => "Your OTP for registration is: {$otp}"
-    //         ]
-    //     );
-
-    //     // Store the OTP in the cache or a dedicated table with a timestamp to check its validity during registration.
-    //     // For this example, we'll use Laravel's Cache facade.
-    //     \Cache::put('otp_' . $validatedData['phone'], $otp, now()->addMinutes(10)); // OTP expires in 10 minutes
-
-    //     return response()->json(['message' => 'OTP sent for registration!']);
-    // }
+     public function resetPassword(Request $request)
+     {
+         $validator=Validator::make(
+             $request->all(),
+             [
+                 'oldpassword'=>'required',
+                 'newpassword'=>'required',
+                 'c_newpassword'=>'required|same:password'
+             ]);
+             $customer=Auth::guard('customer-api')->first();
+             if ($request->oldpassword=$customer->password)
+             {
+              $customer->password=bcrypt($request->newpassword);
+              $customer->save();  
+              return $this->sendResponse($customer,'reset password Successfully!'); 
+             }
+             return 'old password incorrect';
+         }
+         public function sendVerify_password(Request $request)
+         {
+            $validator=Validator::make(
+                $request->all(),
+                [
+                    'phone'=>'required|exists:customers,phone',
+                 ]);
+                if ($validator->fails())
+                {
+                    return $this->sendError($validator->errors()->first());
+                }
+            $customer=Customer::where('phone',$request->phone)->first();
+            if($customer)
+            {
+                $code=random_int(1000,9999);
+                $customer->update([
+                    'otp'=>$code
+                ]);
+             return $this->sendResponse($code, 'send code');
+            }
+            else
+            {
+                return $this->sendError(' Error', ['error', 'Unauthorized']);
+            }
+         }
+         public function new_password(Request $request)
+         {
+            $customer=Customer::where('phone',$request->phone)->first();
+            $validator=Validator::make(
+                $request->all(),
+                [
+                    'newpassword'=>'required|min:8|max:60',
+                    'c_newpassword'=>'required|same:password',
+                ]);
+                $customer=Auth::guard('customer-api')->first();
+             $customer->password=bcrypt($request->newpassword);
+             $token = $customer->createToken('API Token')->accessToken;
+             return response()->json([
+                 'message'=>'Successfull update_password',
+                 'status'=>true,
+                 'data'=>$customer,
+                 'token'=>$token
+             ],200);    
     
-    // public function registerWithOTP(Request $request)
-    // {
-    //     $validatedData = $request->validate([
-    //         'name' => 'required|string|max:255',
-    //         'email' => 'required|string|email|max:255|unique:users',
-    //         'password' => 'required|string|min:8|confirmed',
-    //         'phone' => 'required|string',
-    //         'otp' => 'required|string',
-    //     ]);
+         }
+         
 
-    //     // Verify if the OTP is correct
-    //     $validOtp = \Cache::get('otp_' . $validatedData['phone']);
-
-    //     if ($validatedData['otp'] !== $validOtp) {
-    //         return response()->json(['message' => 'Invalid OTP'], 401);
-    //     }
-
-    //     // Invalidate the used OTP
-    //     \Cache::forget('otp_' . $validatedData['phone']);
-
-    //     // Create the new user
-    //     $user = User::create([
-    //         'name' => $validatedData['name'],
-    //         'email' => $validatedData['email'],
-    //         'phone' => $validatedData['phone'],
-    //         'password' => Hash::make($validatedData['password']), // Make sure to hash the password
-    //     ]);
-
-    //     // Generate an access token for the authenticated user
-    //     $token = $user->createToken('auth_token')->plainTextToken;
-
-    //     return response()->json([
-    //         'access_token' => $token,
-    //         'token_type' => 'Bearer',
-    //         'user' => $user
-    //     ]);
-    // }
    
-    //  public function requestOTP(Request $request)
-    //  {
-    //      $validatedData = $request->validate([
-    //          'phone' => 'required|string',
-    //      ]);
-    //      $user = User::firstOrCreate(['phone' => $validatedData['phone']]);
-    //      $user->otp = rand(100000, 999999);
-    //      $user->save();
- 
-    //      $twilio_sid = env('TWILIO_SID');
-    //      $twilio_token = env('TWILIO_TOKEN');
-    //      $twilio_phone = env('TWILIO_PHONE');
-    //      $client = new Client($twilio_sid, $twilio_token);
- 
-    //      $client->messages->create(
-    //          $validatedData['phone'],
-    //          [
-    //              'from' => $twilio_phone,
-    //              'body' => "Your OTP for login is: {$user->otp}"
-    //          ]
-    //      );
- 
-    //      return response()->json(['message' => 'OTP sent!']);
-    //  }
- 
-    //  public function loginWithOTP(Request $request)
-    //  {
-    //      $validatedData = $request->validate([
-    //          'phone' => 'required|string',
-    //          'otp' => 'required|string',
-    //      ]);
- 
-    //      $user = User::where('phone', $validatedData['phone'])->where('otp', $validatedData['otp'])->first();
- 
-    //      if (!$user)
-    //       {
-    //          return response()->json(['message' => 'Invalid OTP'], 401);
-    //        }
- 
-    //      $user->otp = null; // Invalidate the OTP
-    //      $user->save();
- 
-    //      // Assuming you're using Laravel Sanctum for API token authentication
-    //      $token = $user->createToken('auth_token')->plainTextToken;
-    //      return response()->json(['access_token' => $token, 'token_type' => 'Bearer']);
-    //  }
 
 
 }

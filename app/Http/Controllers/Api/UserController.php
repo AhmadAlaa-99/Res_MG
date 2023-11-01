@@ -88,7 +88,8 @@ $userId=Auth::guard('customer-api')->id();
 $basedOnYourTasteResturants = Resturant::select(
    'resturants.*',
    DB::raw('ABS(TIMESTAMPDIFF(YEAR,?, CURDATE())) - age_range AS age_difference'),
-   DB::raw('(6371 * acos(cos(radians(?)) * cos(radians(latitude)) * cos(radians(longitude) - radians(?)) + sin(radians(?)) * sin(radians(latitude)))) AS distance')
+   DB::raw('(6371 * acos(cos(radians(?)) * cos(radians(latitude)) * cos(radians(longitude) - radians(?)) 
+   + sin(radians(?)) * sin(radians(latitude)))) AS distance')
 )
 ->join('locations', 'resturants.id', '=', 'locations.resturant_id')
 ->orderBy('age_difference')
@@ -147,6 +148,8 @@ $new_opening = DB::table('images_offers')
       // location - phone - website - insta - deposite_information - refund Policy 
       // change Policy - CANCELLED POLICY
       // -------------------------------
+      // - 
+      // Deposite_information - refund policy - change policy - cancellition policy 
 
       //images - Name - State - City - Description -  RATING(NUM)-  Reviews (stars mumb - num reviews)
       $resturant = Resturant::select(['id','time_start','cuisine_id','time_end', 'name', 'description', 
@@ -154,37 +157,40 @@ $new_opening = DB::table('images_offers')
       ->where('id', $id)
       ->with([
           'images' => function ($query) {
-              $query->select(['id', 'filename', 'type', 'imageable_id']); // Include the foreign key
+              $query->select(['id', 'filename', 'type', 'imageable_id']); 
           },
-         
-          
           'location' => function ($query) {
-              $query->select(['id', 'latitude', 'longitude', 'state', 'text', 'resturant_id']); // Include the foreign key
-          },
-          'reviews',
-          'cuisine',
-      ])
-      ->withCount('reviews as count_reviews')
-      ->first();
-      $suggestions = Resturant::where('category',$resturant->category)->select(
-         'resturants.*')
-     ->join('locations', 'resturants.id', '=', 'locations.resturant_id')
-     ->with(['cuisine', 'images' => function ($query) {
-         $query->where('type', 'main');
-     }, 'location'])
-     ->get()
-     ->map(function ($restaurant) {
-         return [
-             'id'=>$restaurant->id,
-             'name'=>$restaurant->name,
-             'deposite'=>$restaurant->deposit,
-             'cuisine_name' => $restaurant->cuisine->name,
-             'category' => $restaurant->category,
-             'location_text' => $restaurant->location->text,
-             'rating_number' => $restaurant->rating,
-             'images' => $restaurant->images->pluck('filename') // Assuming you only want the file names
-         ];
-     });
+              $query->select(['id', 'latitude', 'longitude', 'state', 'text', 'resturant_id']); 
+          },'reviews','cuisine','menu'])->withCount('reviews as count_reviews')->first();
+          $currentLocation = [
+              'latitude' => '3242.4234',//request('lat'), // get latitude from request
+              'longitude' => '43242.664554',//request('long'), // get longitude from request
+          ];
+          $suggestions = Resturant::where('category', $resturant->category)
+              ->selectRaw('resturants.*, locations.latitude, locations.longitude, 
+                           (6371 * acos(cos(radians(?)) * cos(radians(locations.latitude)) 
+                           * cos(radians(locations.longitude) - radians(?)) + sin(radians(?)) 
+                           * sin(radians(locations.latitude)))) AS distance', 
+                           [$currentLocation['latitude'], $currentLocation['longitude'], $currentLocation['latitude']])
+              ->join('locations', 'resturants.id', '=', 'locations.resturant_id')
+              ->with(['cuisine', 'images' => function ($query) {
+                  $query->where('type', 'main');
+              }, 'location'])
+              ->get()
+              ->map(function ($resturant) {
+                  return [
+                      'id' => $resturant->id,
+                      'name' => $resturant->name,
+                      'deposit' => $resturant->deposit,
+                      'cuisine_name' => $resturant->cuisine->name,
+                      'category' => $resturant->category,
+                      'location_text' => $resturant->location->text,
+                      'rating_number' => $resturant->rating,
+                      'images' => $resturant->images->pluck('filename'), // Assuming you only want the file names
+                      'distance' => $resturant->distance,
+                  ];
+              });
+          
       return $this->sendResponse(['resturant_details'=>$resturant,'suggestions'=>$suggestions],'resturant_details');
    }
    public function available_reservations(Request $request,$id)
@@ -236,13 +242,12 @@ $new_opening = DB::table('images_offers')
     $user->save();
   }
   public function unfollow($id) //id reservation
-  {
+  { 
    $resturant=Resturant::where('id',$id)->first();
    $user=Auth::user();
    $followed = $user->followed_restaurants;
    // Remove the restaurant ID
    $followed = array_diff($followed, [$id]);
-
    // Save back to the user
    $user->followed_restaurants = $followed;
    $user->save();
@@ -264,18 +269,53 @@ $new_opening = DB::table('images_offers')
    return $this->sendResponse(['followings'=>$followings,'recommends'=>$recommends],'followings_recommends');
  }
  public function my_reservations()
- {
-   
-// Page Bookings :
-// History :
-// Upcoming :
-// (num_person - date - st_end - location - status(confirmed - rejected - pending - completed - cancelled - ))
-   // Upcoming - History  (num person - date with time) 
-   // - map(state - city) - image  - status(completed - paid - cancelled)
-      $my_reservations=Reservation::where('customer_id',Auth::guard('customer-api')->id())
+ {      $my_reservations=Reservation::where('customer_id',Auth::guard('customer-api')->id())
       ->with(['resturant' => function ($query) {
-      $query->select('id','name','time_start','time_end','deposit','rating')->with('location','images');}])->get();
-      return $this->sendResponse($my_reservations,'my_reservations');
+      $query->select('id','name','time_start','time_end','deposit','rating')
+      ->with('location','images');}])->with('table')->get();
+      $upcoming = $my_reservations->where('status','next')->map(function ($reservation) {
+         return [
+             'id' => $reservation->id,
+             'customer_id' => $reservation->customer_id,
+             'table_id' => $reservation->table_id,
+             'resturant_id' => $reservation->resturant_id,
+             'speacial_request' => $reservation->speacial_request,
+             'actual_price' => $reservation->actual_price,
+             'reservation_time' => $reservation->reservation_time,
+             'reservation_time_end' => $reservation->reservation_time_end,
+             'reservation_date' => $reservation->reservation_date,
+             'party_size' => $reservation->party_size,
+             'status' => $reservation->status,
+             'created_at' => $reservation->created_at,
+             'updated_at' => $reservation->updated_at,
+             'capacity' => optional($reservation->table)->capacity,
+             'name_resturant' => optional($reservation->resturant)->name,
+             'location' => optional(optional($reservation->resturant)->location)->text,
+             'image_logo' => optional($reservation->resturant->images->where('type', 'logo')->first())->filename
+         ];
+     });
+     $history=$my_reservations->where('status','next')->map(function ($reservation) {
+      return [
+          'id' => $reservation->id,
+          'customer_id' => $reservation->customer_id,
+          'table_id' => $reservation->table_id,
+          'resturant_id' => $reservation->resturant_id,
+          'speacial_request' => $reservation->speacial_request,
+          'actual_price' => $reservation->actual_price,
+          'reservation_time' => $reservation->reservation_time,
+          'reservation_time_end' => $reservation->reservation_time_end,
+          'reservation_date' => $reservation->reservation_date,
+          'party_size' => $reservation->party_size,
+          'status' => $reservation->status,
+          'created_at' => $reservation->created_at,
+          'updated_at' => $reservation->updated_at,
+          'capacity' => optional($reservation->table)->capacity,
+          'name_resturant' => optional($reservation->resturant)->name,
+          'location' => optional(optional($reservation->resturant)->location)->text,
+          'image_logo' => optional($reservation->resturant->images->where('type', 'logo')->first())->filename
+      ];
+  });
+      return $this->sendResponse(['upcoming'=>$upcoming,'history'=>$history],'my_reservations');
  }
  public function reversation_details($id)
  {
@@ -299,25 +339,37 @@ $new_opening = DB::table('images_offers')
 // list res_nearby :
 // image - name- type - availble - distanse - 
 
-   // return list nearest : images large small - name - location - x,y - distanse between location and res
-$userLatitude =$request->user_latitude;
-$userLongitude =$request->user_longitude;
-$userState =$request->user_state;
-$restaurants = Restaurant::with('images', 'cuisine')
-    ->select('restaurants.*') 
+   // return list nearest : images main logo - name - name_cuisine-category distanse between location and res
+$userLatitude ='32423';//$request->user_latitude;
+$userLongitude ='34242342.4322';//$request->user_longitude;
+$map_res = Resturant::with('images','cuisine')
+    ->select('resturants.*') 
     ->selectRaw('( 6371 * acos( cos( radians(?) ) *
                            cos( radians( latitude ) )
                            * cos( radians( longitude ) - radians(?)
                            ) + sin( radians(?) ) *
                            sin( radians( latitude ) ) )
                          ) AS distance', [$userLatitude, $userLongitude, $userLatitude])
-    ->join('locations', 'locations.restaurant_id', '=', 'restaurants.id') 
-    ->where('locations.state', $userState) 
-    ->havingRaw('distance < ?', [20]) 
+    ->join('locations', 'locations.resturant_id', '=', 'resturants.id') 
+    //->havingRaw('distance < ?', [20]) 
     ->orderBy('distance', 'ASC')
     ->limit(10) 
-    ->get();
-
+    ->get()
+    ->map(function ($resturant) {
+        return [
+            'id' => $resturant->id,
+            'name' => $resturant->name,
+            'deposit' => $resturant->deposit,
+            'cuisine_name' => $resturant->cuisine->name,
+            'category' => $resturant->category,
+            'location_text' => $resturant->location->text,
+            'rating_number' => $resturant->rating,
+            'images' => $resturant->images->pluck('filename','type'), // Assuming you only want the file names
+            'distance' => $resturant->distance,
+        ];
+    });
+    return $this->sendResponse($map_res,'map_res');
+    
  }
  public function search(Request $request)
 {
@@ -450,30 +502,39 @@ public function filtersearch(Request $request)
     $latitude = '43243523.464363'; // $request->input('latitude');
     $sortType = $request->input('sort_type', 'rating');
     $followOnly = $request->input('follow_only', false);
-    $nameCuisines = $request->input('name_cuisine', []);
-    $categories = $request->input('category', []);
+    $nameCuisines = $request->input('name_cuisine');
+    $categories = $request->input('category');
     $query = Resturant::query();
 
     if ($followOnly) {
         $query->whereIn('id', Auth::guard('customer-api')->user()->followed_resturants ?? []);
     }
-
     if (empty($nameCuisines)) {
         $nameCuisines = []; // Convert to an empty array if it's empty
     }
-
-    if (!empty($nameCuisines)) {
-        $query->whereIn('cuisine_id', function ($query) use ($nameCuisines) {
-            $query->select('id')
-                ->from('cuisines')
-                ->whereIn('name', $nameCuisines);
-        });
+   // return $nameCuisines; //response : ['عربي']
+   if (!empty($nameCuisines))
+    {
+      // Ensure that $nameCuisines is an array
+      if (!is_array($nameCuisines)) {
+          $nameCuisines = [$nameCuisines];
+      }
+  
+      $query->whereIn('cuisine_id', function ($query) use ($nameCuisines) {
+          $query->select('id')
+              ->from('cuisines')
+              ->whereIn('name', $nameCuisines);
+      });
+  }
+  if (!empty($categories))
+  {
+    // Ensure that $nameCuisines is an array
+    if (!is_array($categories)) {
+        $categories = [$categories];
     }
 
-    if (!empty($categories)) {
-        $query->whereIn('category', $categories);
+    $query->whereIn('category', $categories);
     }
-
     // Sort the results based on the chosen sort type
     if ($sortType === 'distance' && $longitude && $latitude) {
         $query->selectRaw(
@@ -534,25 +595,100 @@ public function filtersearch(Request $request)
    }
    public function details_offer($id)
    {
-      // IMAGE - PRICE_OLD - PRICE_NEW - DESC - NAME_OFFER - FEATURES - IMAGES
-      $offer=offer::where('id',$id)
-      ->with(['images' => function($query) {
-          $query->select('id','imageable_id','filename','type');
-      }])->first();
-      return $this->sendResponse($offer,'details_offer');
+       $offer = offer::where('id', $id)
+           ->with(['images' => function ($query) {
+               $query->select('id', 'imageable_id', 'filename', 'type');
+           }])->first();
+   
+       // Extract the path_main from the images array
+       $pathMain = null;
+       $filteredImages = [];
+   
+       foreach ($offer->images as $image) {
+           if ($image->type === 'main') {
+               $pathMain = $image->filename;
+           } elseif ($image->type === 'others') {
+               $filteredImages[] = $image;
+           }
+       }
+   
+       // Create the modified response
+       $modifiedOffer = [
+           'id' => $offer->id,
+           'resturant_id' => $offer->resturant_id,
+           'price_old' => $offer->price_old,
+           'price_new' => $offer->price_new,
+           'desc' => $offer->desc,
+           'name' => $offer->name,
+           'type' => $offer->type,
+           'open_year' => $offer->open_year,
+           'status' => $offer->status,
+           'featured' => $offer->featured,
+           'path_main' => $pathMain,
+           'created_at' => $offer->created_at,
+           'updated_at' => $offer->updated_at,
+           'images' => $filteredImages,
+       ];
+       return $this->sendResponse($modifiedOffer, 'details_offer');
    }
-   public function available_times($id)  //id res
+
+
+   
+   public function available_times_res(Request $request,$id)  //id res
    {
-      // request : date - numPersone - return : time
+      // request : date - numPersone - return : reservations(id,time)-times_availables
    }
    public function nearest_resturants(Request $request)
    {
-     // name_cat : (rating - name - ? - available - distance)
-    return $this->sendResponse($resturants,'details_offer');
+     // name_cuisine : (rating - name - category - available - distance)
+   //   resturants : id cuisine_id name description   category is_available deposit  rating
+   //   cuisines : id name
+   //   images : filename  type imageable_id  imageable_type
+   $lat='fdsfdsfsd';
+   $lng='rwerwewfs';
+   $currentLocation = [
+      'latitude' => '3242.4234',//request('lat'), // get latitude from request
+      'longitude' => '43242.664554',//request('long'), // get longitude from request
+   ];
+     $nearest_resturants = Cuisine::with(['resturants' => function($query) use ($lat, $lng,$currentLocation) {
+      $query->with(['images' => function($query) {
+          $query->where('type', 'main');
+      }]);
+      $query->selectRaw('resturants.*, locations.latitude, locations.longitude, 
+      (6371 * acos(cos(radians(?)) * cos(radians(locations.latitude)) 
+      * cos(radians(locations.longitude) - radians(?)) + sin(radians(?)) 
+      * sin(radians(locations.latitude)))) AS distance', 
+      [$currentLocation['latitude'], $currentLocation['longitude'], $currentLocation['latitude']]);
+
+   // $query->having('distance', '<', 50); 
+   $query->join('locations', 'resturants.id', '=', 'locations.resturant_id'); 
+  }])->get();
+    return $this->sendResponse($nearest_resturants,'nearest_resturants');
    }
-   public function category_resturants($id)
+   public function cuisine_resturants($id)
    {
      // page view_all_cat :
+     $lat='fdsfdsfsd';
+     $lng='rwerwewfs';
+     $currentLocation = [
+        'latitude' => '3242.4234',//request('lat'), // get latitude from request
+        'longitude' => '43242.664554',//request('long'), // get longitude from request
+     ];
+       $cuisine_resturants = Cuisine::where('id',$id)->with(['resturants' => function($query) use ($lat, $lng,$currentLocation) {
+        $query->with(['images' => function($query) {
+            $query->where('type', 'main');
+        }]);
+        $query->selectRaw('resturants.*, locations.latitude, locations.longitude, 
+        (6371 * acos(cos(radians(?)) * cos(radians(locations.latitude)) 
+        * cos(radians(locations.longitude) - radians(?)) + sin(radians(?)) 
+        * sin(radians(locations.latitude)))) AS distance', 
+        [$currentLocation['latitude'], $currentLocation['longitude'], $currentLocation['latitude']]);
+  
+     // $query->having('distance', '<', 50); 
+     $query->join('locations', 'resturants.id', '=', 'locations.resturant_id'); 
+    }])->first();
+      return $this->sendResponse($cuisine_resturants,'cuisine_resturants');
+
    }
 
 }

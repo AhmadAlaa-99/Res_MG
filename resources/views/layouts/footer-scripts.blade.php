@@ -13,8 +13,10 @@
   <script src="{{ URL::asset('dashboard/js/demo.js') }}"></script>
   <script src="{{ URL::asset('dashboard/js/styleSwitcher.js') }}"></script>
   <script src="{{ mix('js/app.js') }}" defer></script>
-
   <script src="{{ asset('js/app.js') }}"></script>
+
+
+
 
 
 

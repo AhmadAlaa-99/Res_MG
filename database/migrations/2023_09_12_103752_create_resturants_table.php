@@ -26,6 +26,13 @@ return new class extends Migration
             $table->text('age_range')->nullable();
             $table->string('category')->default('resturant');
             $table->string('phone_number');
+            $table->string('web')->default('www.resturant.com');
+            $table->string('insta')->default('@insta.com');
+            $table->string('Deposite_information');
+            $table->string('refund_policy');
+            $table->string('change_policy');
+            $table->string('cancellition_policy');
+            $table->string('is_available')->default('available');
             $table->float('deposit')->default('0');
             $table->float('rating')->default('0');
             $table->json('services')->nullable();

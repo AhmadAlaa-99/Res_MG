@@ -26,8 +26,9 @@ return new class extends Migration
             $table->string('speacial_request')->nullable();
             $table->string('actual_price')->nullable();
             $table->string('reservation_time'); //(9\12\2023 4:32 PM)
-            $table->date('reservation_date'); //(9\12\2023 4:32 PM)
+            $table->string('reservation_time_end')->nullable(); //(9\12\2023 4:32 PM)
 
+            $table->date('reservation_date'); //(9\12\2023 4:32 PM)
             $table->string('party_size')->nullable();
             $table->string('status')->default('scheduled');   //status(scheduled - current - next) 
 

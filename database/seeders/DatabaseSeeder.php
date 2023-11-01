@@ -86,18 +86,21 @@ class DatabaseSeeder extends Seeder
         $m=1;
         for($i=2; $i<12 ;$i++)
         {
-         
             \App\Models\Resturant::create([
               'user_id' =>$i,
               'cuisine_id' => random_int(1,4),
               'description' => $faker->paragraph,
-            
               'name'=>$faker->name,
             //  'Activation_time'=>'2023-09-10 | 2023-09-20',
-            'Activation_start'=>'2023-09-10',
-            'Activation_end'=>'2023-09-27',
+             'Activation_start'=>'2023-09-10',
+             'Activation_end'=>'2023-09-27',
               'phone_number'=>'9639'.random_int(10000000,99999999),
               'age_range'=>serialize(['start_age' =>18,'end_age' => 30]),
+              'services'=>json_encode(['wifi' =>'attachments\\resturants\\images\\wifi.png','call' =>'attachments\\resturants\\images\\wifi.png']),
+              'Deposite_information'=>'(50,$50 deposite per persone is required)',
+              'refund_policy'=>('24,refund until 1 day'),
+              'change_policy'=>('3,booking change until 3 hours'),
+              'cancellition_policy'=>('4,cancellation allowed until 4 hours'),
             ]);
             $resturant=Resturant::latest()->first();
             \App\Models\Image::create([
@@ -175,6 +178,7 @@ class DatabaseSeeder extends Seeder
               'desc'=>'test offer',
               'name'=>'name offer',
               'type'=>$type[array_rand($type)],
+              'open_year'=>'2020/10/10',
               'featured'=>['wifi','water'],
               'resturant_id'=>'1'
               ]);
