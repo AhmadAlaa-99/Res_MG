@@ -205,6 +205,7 @@ public function reservations_regenerate_post(Request $request)
                             $reservation = new Reservation();
                             $reservation->table_id = $table->id;
                             $reservation->resturant_id = $resturant->id;
+                            $reservation->duration=$request->duration;
                             // إضافة نصف ساعة إلى وقت الحجز
                             $reservationTime = $startTime->addMinutes(30 * $j); 
                             $reservation->reservation_time =  $reservationTime->format('H:i');

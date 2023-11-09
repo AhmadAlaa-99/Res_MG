@@ -49,14 +49,14 @@
                     </a>
                 </li>
             @endcan
-            {{-- @can('statistics(staff)') --}}
+            @can('statistics(staff)') 
                 <li>
                     <a href="{{ route('staff_statistics') }}" class="ai-icon" aria-expanded="false">
                         <i class="flaticon-025-dashboard"></i>
                         <span class="nav-text">Statistics</span>
                     </a>
                 </li>
-            {{-- @endcan --}}
+             @endcan 
             <li>
                 @can('Browse Resturants')
                     <a class="has-arrow ai-icon" href="javascript:void()" aria-expanded="false">

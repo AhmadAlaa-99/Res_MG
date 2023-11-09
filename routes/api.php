@@ -45,14 +45,9 @@ Route::prefix('customer/')->group(function ()
             Route::get('profile',[AuthController::class,'profile']);
             Route::post('edit_profile',[AuthController::class,'edit_profile']); 
             Route::post('reset_password',[AuthController::class,'resetPassword'])->name('reset_password'); 
-            Route::get('my_reservations',[UserController::class,'my_reservations'])->name('my_reservations');
-            
-            Route::post('available_times/{id}',[UserController::class,'available_times_res'])->name('available_times'); //private
             Route::post('reversation/{id}',[UserController::class,'reversation'])->name('reversation');
+            Route::post('available_times/{id}',[UserController::class,'available_times_res'])->name('available_times'); //private
+            Route::get('my_reservations',[UserController::class,'my_reservations'])->name('my_reservations');
             Route::post('reversation_cancel/{id}',[UserController::class,'reversation_cancel'])->name('reversation_cancel');
-            // Route::post('reversation_details/{id}',[UserController::class,'reversation_details'])->name('reversation_details');//==details : (details _res)
-            // Route::get('available_reservations/{id}',[UserController::class,'available_reservations'])->name('available_reservations');        
-          
-
         }); });
 

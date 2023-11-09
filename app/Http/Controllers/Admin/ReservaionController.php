@@ -182,19 +182,15 @@ class DashboardController extends Controller
         $table=Table::where('id',$id)->first();
         return view('Admin.Resturants.table_details',compact('table'));
     }
-    
-
-public function staff_all()
+     public function staff_all()
 {
     $users=User::where('role_name','staff')->get();
     return view('Admin.Users.staff',compact('users'));
-
 }
 public function customers()
 {
     $users=User::where('role_name','customer')->get();
     return view('Admin.Users.customers',compact('users'));
-
 }
 public function table_add(Request $request,$id)
 {

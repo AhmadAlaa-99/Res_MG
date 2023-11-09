@@ -88,7 +88,15 @@ class DashboardController extends Controller
         'status'=>'active',
       ]);
       $user=User::latest()->first();
-     
+      
+      
+      
+      
+      
+      
+      
+      
+ 
 
       Resturant::create([
         'user_id'=>$user->id,
@@ -98,11 +106,15 @@ class DashboardController extends Controller
         'Activation_start'=>$request->Activation_start,
         'Activation_end'=>$request->Activation_end,
         'phone_number'=>$request->resturant_phone,
-        'deposit'=>$request->deposite,
+        'deposit'=>$request->deposite_value,
         'age_range'=>serialize(['start_age' =>18,'end_age' => 30]),
         'services' => json_encode($services),
-      //  'work_time'=>$request->work_time,
-        //'images'=>$request->images,
+        'Deposite_information'=>$request->deposit_desc.','.$request->deposite_value,
+        'refund_policy'=>$request->refund_desc.','.$request->refund_value,
+        'change_policy'=>$request->change_desc.','.$request->change_value,
+        'cancellition_policy'=>$request->cancellition_desc.','.$request->cancellition_value,
+        'web'=>$request->web,
+        'insta'=>$request->Insta,
       ]);
     $resturant=Resturant::latest()->first();
     $user= User::latest()->first(); 

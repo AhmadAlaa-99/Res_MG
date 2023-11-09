@@ -226,7 +226,6 @@ class AuthController extends BaseController
          'gender'=>$request->gender,
         ]);
         return $this->sendResponse($customer,'update successfully');
-       
      }
      public function resetPassword(Request $request)
      {

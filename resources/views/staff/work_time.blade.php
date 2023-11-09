@@ -161,6 +161,12 @@
                                             <div class="alert alert-danger">{{ $message }}</div>
                                         @enderror
                                     </div>
+                                    <div class="mob mb-2"> <label class="text-grey mr-4">Duration</label>
+                                        <input class="ml-1" value="-" type="number" name="duration" required>
+                                        @error('duration')
+                                            <div class="alert alert-danger">{{ $message }}</div>
+                                        @enderror
+                                    </div>
                                     <div class="text-danger"></div>
                                 </div>
                             </div>
@@ -179,16 +185,16 @@
                                             class="ml-1" type="time" value="{{ $times->sat_to ?? '23:00' }}"
                                             name="sat_to">
 
-                                    </div>        
-                
-                                                    
+                                    </div>
+
+
                                     <div class="text-danger">
-                                      @error('sat_to')
-                                        <div class="alert alert-danger">{{ $message }}</div>
-                                    @enderror
+                                        @error('sat_to')
+                                            <div class="alert alert-danger">{{ $message }}</div>
+                                        @enderror
                                     </div>
                                 </div>
-                                  
+
                             </div>
                         </div>
                         <div class="row px-3">
@@ -206,8 +212,8 @@
                                             name="sun_to"> </div>
                                     <div class="text-danger">
                                         @error('sun_to')
-                                        <div class="alert alert-danger">{{ $message }}</div>
-                                    @enderror
+                                            <div class="alert alert-danger">{{ $message }}</div>
+                                        @enderror
                                     </div>
                                 </div>
                             </div>
@@ -228,8 +234,8 @@
                                             name="mon_to"> </div>
                                     <div class="text-danger">
                                         @error('mon_to')
-                                        <div class="alert alert-danger">{{ $message }}</div>
-                                    @enderror
+                                            <div class="alert alert-danger">{{ $message }}</div>
+                                        @enderror
                                     </div>
                                 </div>
                             </div>
@@ -248,8 +254,8 @@
                                             name="tue_to"> </div>
                                     <div class="text-danger">
                                         @error('tue_to')
-                                        <div class="alert alert-danger">{{ $message }}</div>
-                                    @enderror
+                                            <div class="alert alert-danger">{{ $message }}</div>
+                                        @enderror
                                     </div>
                                 </div>
                             </div>
@@ -265,11 +271,11 @@
                                     <div class="mob mb-2"> <label class="text-grey mr-4">To</label> <input
                                             class="ml-1" type="time" value="{{ $times->wed_to ?? '23:00' }}"
                                             name="wed_to"> </div>
-                                            <input type="hidden" value="{{$id}}" name="res_id">
+                                    <input type="hidden" value="{{ $id }}" name="res_id">
                                     <div class="text-danger">
                                         @error('wed_to')
-                                        <div class="alert alert-danger">{{ $message }}</div>
-                                    @enderror
+                                            <div class="alert alert-danger">{{ $message }}</div>
+                                        @enderror
                                     </div>
                                 </div>
                             </div>
@@ -287,8 +293,8 @@
                                             name="thu_to"> </div>
                                     <div class="text-danger">
                                         @error('thu_to')
-                                        <div class="alert alert-danger">{{ $message }}</div>
-                                    @enderror
+                                            <div class="alert alert-danger">{{ $message }}</div>
+                                        @enderror
                                     </div>
                                 </div>
                             </div>
@@ -305,9 +311,9 @@
                                             class="ml-1" type="time" value="{{ $times->fri_to ?? '23:00' }}"
                                             name="fri_to"> </div>
                                     <div class="text-danger">
-                                      @error('fri_to')
-                                        <div class="alert alert-danger">{{ $message }}</div>
-                                    @enderror
+                                        @error('fri_to')
+                                            <div class="alert alert-danger">{{ $message }}</div>
+                                        @enderror
                                     </div>
                                 </div>
                             </div>
@@ -315,10 +321,10 @@
                         <div class="row px-3 mt-3 justify-content-center">
                             <button type="submit" name="action"
                                 value="submit"class="btn btn-success ml-2">Done</button>
-                                    <button type="submit" name="action"
+                            <button type="submit" name="action"
                                 value="regenerate"class="btn btn-danger ml-2">Records</button>
-                                      <button type="submit" name="action"
-                                value="cancel" class="btn exit ml-2">Cancel</button>
+                            <button type="submit" name="action" value="cancel"
+                                class="btn exit ml-2">Cancel</button>
                         </div>
                     </div>
                 </form>

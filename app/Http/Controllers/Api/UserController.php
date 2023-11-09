@@ -220,11 +220,29 @@ $new_opening = DB::table('images_offers')
 // firstname - last - phone - cooments - PAYMENT_METHOD - CODE PROMO
 // gROUP BROOKING AND TPTAL 
       $reservation=Reservation::where('id',$id)->first();
+      $reservationTime = $reservation->reservation_time instanceof Carbon
+      ? $reservation->reservation_time
+      : new Carbon($reservation->reservation_time);
+
+// Now you can safely call addMinutes()
+$reservationTimeEnd = $reservationTime->addHours($reservation->duration);
+
       $reservation->update([
          'customer_id'=>Auth::guard('customer-api')->id(),
          'speacial_request'=>'-',
          'status'=>'next',
+         'reservation_time_end'=> $reservationTimeEnd,
       ]);
+      //delete reservations in this table res date between reservation_time - reservation_time_end
+    $conflictingReservations = Reservation::where('table_id', $reservation->table_id)
+    ->where('reservation_date', $reservation->reservation_date)
+    ->where(function ($query) use ($reservation) {
+        // Where the time of the new/updated reservation overlaps with others
+        $query->whereBetween('reservation_time', [$reservation->reservation_time, $reservation->reservation_time_end])
+              ->orWhereBetween('reservation_time_end', [$reservation->reservation_time, $reservation->reservation_time_end]);
+    })->where('id', '!=', $id) // Exclude the current reservation
+      ->get();
+      $conflictingReservations->each->delete();
       return $this->sendResponse($reservation,'reservation_details');
    }
    public function follow($id) //id reservation
@@ -325,13 +343,49 @@ $new_opening = DB::table('images_offers')
  }
  public function reversation_cancel($id)
  {
-     $reservation=Reservation::where('id',$id)->first();
-     $reservation->update([
-       'customer_id'=>Auth::guard('customer-api')->id(),
-       'speacial_request'=>'-',
-       'status'=>'cancelled',
-    ]);
-    return $this->sendResponse($reservation,'cancelled successfully');
+   
+
+     $reservation = Reservation::find($id);
+     if (!$reservation) {
+         return $this->sendError('Reservation not found.');
+     }
+ 
+     $restaurant = $reservation->resturant;
+ 
+     if (!$restaurant) {
+         return $this->sendError('Restaurant not found.');
+     }
+ 
+     // Calculate the time remaining to start the reservation from now
+     $currentTime = now();
+     $reservationStartTime = Carbon::parse($reservation->reservation_time);
+     $timeRemainingInMinutes = $reservationStartTime->diffInMinutes($currentTime);
+
+     preg_match('/^([^,]+),/', $restaurant->cancellition_policy, $matches);
+     $canceler = trim($matches[1]);    
+
+     preg_match('/^([^,]+),/', $restaurant->refund_policy, $value);
+      $refunder = trim($value[1]);   
+
+     // Compare the time remaining with the cancellation policy
+     if ($timeRemainingInMinutes >= $refunder * 60) {
+         
+         return $this->sendResponse($reservation, 'Reservation cancelled successfully with refunder');
+     }
+      else 
+     {
+        return $this->sendResponse($reservation, 'Reservation cancelled successfully without refunder');
+     }
+
+     if ($timeRemainingInMinutes >= $canceler * 60) {
+         
+        return $this->sendResponse($reservation, 'Reservation cancelled successfully with refunder');
+    }
+     else 
+    {
+       return $this->sendResponse($reservation, 'Reservation cancelled successfully without refunder');
+    }
+
  }
  public function map_res(Request $request)
  {
@@ -637,6 +691,14 @@ public function filtersearch(Request $request)
    public function available_times_res(Request $request,$id)  //id res
    {
       // request : date - numPersone - return : reservations(id,time)-times_availables
+      $times=Reservation::where([
+        'reservation_date'=>$request->date,
+        //'reservation_time'=>$request->reservation_time,
+        'party_size'=>$request->number,
+        'resturant_id'=>$id,
+        'status'=>'scheduled',
+      ])->get(['id', 'reservation_time']);
+      return $this->sendResponse($times, 'available_times_res');
    }
    public function nearest_resturants(Request $request)
    {

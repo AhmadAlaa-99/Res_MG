@@ -97,6 +97,8 @@
                                                 <span class="text-danger">*</span>
                                             </label>
                                             <div class="col-lg-6">
+                                                
+               
 
                                                 <select class="default-select wide form-control" name="state"
                                                     id="validationCustom05">
@@ -117,16 +119,48 @@
                                                 </div>
                                             </div>
                                         </div>
+
+
+
+
+
+                                        <div class="mb-3 row">
+                                            <label class="col-lg-4 col-form-label" for="validationCustom08">Deposit
+                                                Information
+                                                <span class="text-danger">*</span>
+                                                <input type="number"style="width:50%;" value="15"
+                                                    name="deposite_value"class="form-control" id="validationCustom07"
+                                                    placeholder="deposite" required="">
+                                                @error('deposite')
+                                                    <div class="alert alert-danger">{{ $message }}</div>
+                                                @enderror
+                                            </label>
+                                            <div class="col-lg-6">
+                                                <textarea type="textarea"row="3" class="form-control" id="validationCustom08" placeholder="refund_policy"
+                                                    value="deposit_desc"name="deposit_desc" required="">
+                                            </textarea>
+                                                @error('deposit_desc')
+                                                    <div class="alert alert-danger">{{ $message }}</div>
+                                                @enderror
+                                                <div class="invalid-feedback">
+                                                    Please enter a refund_policy.
+                                                </div>
+                                            </div>
+                                        </div>
                                         <div class="mb-3 row">
                                             <label class="col-lg-4 col-form-label" for="validationCustom08">refund_policy
                                                 <span class="text-danger">*</span>
+                                                <input type="number"style="width:50%;" value="15"
+                                                    name="refund_value"class="form-control" id="validationCustom07"
+                                                    placeholder="refund_value" required="">
+                                                @error('refund_value')
+                                                    <div class="alert alert-danger">{{ $message }}</div>
+                                                @enderror
                                             </label>
                                             <div class="col-lg-6">
-
-                                                <textarea type="textarea" row="3"class="form-control" id="validationCustom08" placeholder="refund_policy"
-                                                    value="refund_policy"name="refund_policy" required="">
+                                                <textarea type="textarea"row="3" class="form-control" id="validationCustom08" placeholder="refund_policy"
+                                                    value="refund_desc"name="refund_desc" required="">
                                             </textarea>
-
                                                 @error('refund_policy')
                                                     <div class="alert alert-danger">{{ $message }}</div>
                                                 @enderror
@@ -138,13 +172,14 @@
                                         <div class="mb-3 row">
                                             <label class="col-lg-4 col-form-label" for="validationCustom08">change_policy
                                                 <span class="text-danger">*</span>
+                                                <input class="form-control" name="change_value"style="width:50%;"
+                                                    type=number>
                                             </label>
                                             <div class="col-lg-6">
                                                 <textarea type="textarea" row="3"class="form-control" id="validationCustom08" placeholder="change_policy"
-                                                    value="change_policy"name="change_policy" required="">
+                                                    value="change_desc"name="change_desc" required="">
                                             </textarea>
-
-                                                @error('change_policy')
+                                                @error('change_desc')
                                                     <div class="alert alert-danger">{{ $message }}</div>
                                                 @enderror
                                                 <div class="invalid-feedback">
@@ -156,11 +191,13 @@
                                             <label class="col-lg-4 col-form-label"
                                                 for="validationCustom08">cancellition_policy
                                                 <span class="text-danger">*</span>
+                                                <input name="cancellition_value"class="form-control" style="width:50%;"
+                                                    type=number>
                                             </label>
                                             <div class="col-lg-6">
 
                                                 <textarea type="textarea"row="3" class="form-control" id="validationCustom08" placeholder="cancellition_policy"
-                                                    value="cancellition_policy"name="cancellition_policy" required="">
+                                                    value="cancellition_policy"name="cancellition_desc" required="">
                                             </textarea>
 
                                                 @error('cancellition_policy')
@@ -171,11 +208,6 @@
                                                 </div>
                                             </div>
                                         </div>
-
-
-
-
-
                                     </div>
                                     <div class="col-xl-6">
                                         <div class="mb-3 row">
@@ -246,21 +278,42 @@
                                                 </div>
                                             </div>
                                         </div>
+
+
+
                                         <div class="mb-3 row">
-                                            <label class="col-lg-4 col-form-label" for="validationCustom07">Deposite
+                                            <label class="col-lg-4 col-form-label" for="validationCustom07">Website
                                                 <span class="text-danger">*</span>
                                             </label>
                                             <div class="col-lg-6">
-                                                <input type="number" value="15" name="deposite"class="form-control"
-                                                    id="validationCustom07" placeholder="deposite" required="">
-                                                @error('deposite')
+                                                <input type="text" value="desc"
+                                                    name="web"class="form-control" id="validationCustom07"
+                                                    placeholder="web" required="">
+                                                @error('web')
                                                     <div class="alert alert-danger">{{ $message }}</div>
                                                 @enderror
                                                 <div class="invalid-feedback">
-                                                    Please enter a deposite.
+                                                    Please enter a web.
                                                 </div>
                                             </div>
                                         </div>
+                                        <div class="mb-3 row">
+                                            <label class="col-lg-4 col-form-label" for="validationCustom07">Instagram
+                                                <span class="text-danger">*</span>
+                                            </label>
+                                            <div class="col-lg-6">
+                                                <input type="text" value="Insta"
+                                                    name="Insta"class="form-control" id="validationCustom07"
+                                                    placeholder="Insta" required="">
+                                                @error('Insta')
+                                                    <div class="alert alert-danger">{{ $message }}</div>
+                                                @enderror
+                                                <div class="invalid-feedback">
+                                                    Please enter a Insta.
+                                                </div>
+                                            </div>
+                                        </div>
+
 
                                         <div class="mb-3 row">
                                             <label class="col-lg-4 col-form-label"
@@ -295,8 +348,7 @@
                                             </div>
                                         </div>
                                         <div class="input-group mb-3">
-                                            <label class="col-lg-4 col-form-label"
-                                                for="validationCustom09">Images(Craousal)
+                                            <label class="col-lg-4 col-form-label" for="validationCustom09">Images(main)
                                                 <span class="text-danger">*</span>
                                             </label>
                                             <div class="col-lg-6">
@@ -311,7 +363,7 @@
                                             </div>
                                         </div>
                                         <div class="input-group mb-3">
-                                            <label class="col-lg-4 col-form-label" for="validationCustom09">Image(Logo)
+                                            <label class="col-lg-4 col-form-label" for="validationCustom09">Image(logo)
                                                 <span class="text-danger">*</span>
                                             </label>
                                             <div class="col-lg-6">
@@ -378,23 +430,7 @@
                                     <div class="col-lg-8 col-sm-6 col-12">
                                         <div id="map" style="height: 400px;     margin-bottom: 15px;"></div>
                                     </div>
-                                    {{-- <div class="col-xl-4">
-                                        <div class="card">
-                                            <div class="card-header">
-                                                <h4 class="card-title">The appropriate age range for the restaurant</h4>
-                                            </div>
-                                            <div class="card-body">
-                                                <div class="input-element">
-                                                    <div id="html5"></div>
-                                                    <div class="inputs mt-4">
-                                                        <select class="form-control my-4" id="input-select"></select>
-                                                        <input class="form-control" type="number" min="-20"
-                                                            max="40" step="1" id="input-number">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div> --}}
+
                                     <div class="col-xl-4">
                                         <div class="card">
                                             <div class="card-header">
@@ -402,11 +438,11 @@
                                             </div>
                                             <div class="card-body">
                                                 <div class="input-element">
-                                                   
+
                                                     <div class="inputs mt-4">
                                                         <input class="form-control" type="number" min="15"
                                                             max="80" step="1" id="input-number">
-                                                    </br>
+                                                        </br>
                                                         <input class="form-control" type="number" min="15"
                                                             max="80" step="1" id="input-number">
                                                     </div>
@@ -420,7 +456,7 @@
                                         <div class="card">
                                             <div class="card-header d-block">
                                                 <h4 class="card-title">Services</h4>
-                                              
+
                                             </div>
                                             <div class="card-body">
                                                 @foreach ($icons as $icon)
@@ -432,9 +468,10 @@
                                                             <label class="form-check-label" for="checkAll"></label>
                                                         </div>
                                                     </div>
-                                                    <button type="button" class="btn btn-primary"style="height: 45px;
-                                                                width: 147px;
-                                                                padding: 5px;">{{ $icon->name }}
+                                                    <button type="button"
+                                                        class="btn btn-primary"style="height: 45px;
+                                                                                                    width: 147px;
+                                                                                                    padding: 5px;">{{ $icon->name }}
                                                         <span class="btn-icon-end">
                                                             {{-- <i class="fa fa-shopping-cart"></i> --}}
                                                             <img style="height:16px;width:16px;"src="{{ asset($icon->image) }}"
